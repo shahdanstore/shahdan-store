@@ -1,11 +1,11 @@
+
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const SITE_URL = (process.env.SITE_URL || "https://shahdan-store.com").replace(
-  /\/$/,
-  "",
-);
+const SITE_URL = (
+  process.env.SITE_URL || "https://shahdan-store-sigma.vercel.app"
+).replace(/\/$/, "");
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -46,13 +46,12 @@ export default async function handler(req, res) {
         )
         .join("") || "";
 
-    await resend.emails.send({
+    const result = await resend.emails.send({
       from: "شهدان ستور <onboarding@resend.dev>",
       to: ["shahdan.store@gmail.com"],
-      subject: `🛒 طلب جديد ${order.orderNumber} - ${
+      subject: `🛒 طلب جديد ${order.orderNumber || ""} - ${
         order.customer?.name || ""
       }`,
-
       html: `
         <div
           style="
@@ -149,15 +148,18 @@ export default async function handler(req, res) {
       `,
     });
 
+    console.log("RESEND RESULT:", result);
+
     return res.status(200).json({
       success: true,
+      id: result?.data?.id || null,
     });
   } catch (error) {
     console.error("EMAIL ERROR:", error);
 
     return res.status(500).json({
       success: false,
-      error: error.message,
+      error: error?.message || "Email sending failed",
     });
   }
 }
