@@ -125,13 +125,15 @@ function Header() {
   return (
     <>
       <header className="fixed left-0 right-0 top-0 z-[99990]">
-        {/* Announcement Bar */}
+        {/* =========================================
+            Announcement Bar
+            ========================================= */}
         {settings?.announcementBar?.enabled && (
           <div
             className="h-10 overflow-hidden"
             style={{
               backgroundColor:
-                settings?.announcementBar?.backgroundColor || "#15803d",
+                settings?.announcementBar?.backgroundColor || "#171717",
               color: settings?.announcementBar?.textColor || "#ffffff",
             }}
           >
@@ -157,109 +159,137 @@ function Header() {
           </div>
         )}
 
-        {/* Main Header */}
-        <div className="border-b border-gray-100 bg-white/90 shadow-sm backdrop-blur-xl transition-all duration-300">
+        {/* =========================================
+            Main Header
+            ========================================= */}
+        <div className="border-b border-[#e8e1d7] bg-[#faf8f3]/95 shadow-sm backdrop-blur-xl transition-all duration-300">
           <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-            {/* Mobile menu button */}
+            {/* Mobile menu */}
             <button
               type="button"
               onClick={() => {
                 setMenuOpen(true);
                 setDrawerVisible(false);
               }}
-              className="text-2xl text-gray-700 md:hidden"
+              className="text-2xl text-[#242424] transition hover:text-[#b08d57] md:hidden"
               aria-label="فتح القائمة"
             >
               <FaBars />
             </button>
 
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
-              <FaBolt className="text-3xl text-green-600" />
+            {/* =========================================
+                Logo
+                ========================================= */}
+            <Link to="/" className="group flex items-center gap-2">
+              <FaBolt className="text-3xl text-[#b08d57] transition-transform duration-300 group-hover:scale-110" />
 
-              <h1 className="text-2xl font-bold text-green-700 sm:text-3xl">
-                شهدان ستور
-              </h1>
+              <div className="flex flex-col leading-none">
+                <h1 className="text-2xl font-bold tracking-tight text-[#171717] sm:text-3xl">
+                  شهدان
+                </h1>
+
+                <span className="mt-1 text-[9px] font-semibold tracking-[0.28em] text-[#b08d57]">
+                  SHAHDAN STORE
+                </span>
+              </div>
             </Link>
 
-            {/* Desktop Nav */}
+            {/* =========================================
+                Desktop Navigation
+                ========================================= */}
             <nav className="hidden gap-8 font-medium md:flex">
-              <Link to="/" className="transition hover:text-green-600">
+              <Link
+                to="/"
+                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
+              >
                 الرئيسية
               </Link>
 
-              <Link to="/products" className="transition hover:text-green-600">
+              <Link
+                to="/products"
+                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
+              >
                 كل المنتجات
               </Link>
 
               <Link
                 to="/categories"
-                className="transition hover:text-green-600"
+                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
               >
                 التصنيفات
               </Link>
 
-              <Link to="/about" className="transition hover:text-green-600">
+              <Link
+                to="/about"
+                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
+              >
                 تواصل معنا
               </Link>
             </nav>
 
-            {/* Desktop Search */}
+            {/* =========================================
+                Desktop Search
+                ========================================= */}
             <form
               onSubmit={handleSearchSubmit}
-              className="hidden items-center overflow-hidden rounded-full border lg:flex"
+              className="hidden items-center overflow-hidden rounded-full border border-[#e8e1d7] bg-white lg:flex"
             >
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="ابحث عن منتج..."
-                className="w-64 px-4 py-2 outline-none"
+                className="w-64 bg-transparent px-4 py-2 text-sm text-[#242424] outline-none placeholder:text-[#9a9a9a]"
               />
 
               <button
                 type="submit"
-                className="bg-green-600 px-4 py-3 text-white transition hover:bg-green-700"
+                className="bg-[#171717] px-4 py-3 text-[#d4b477] transition hover:bg-[#b08d57] hover:text-white"
                 aria-label="بحث"
               >
                 <FaSearch />
               </button>
             </form>
 
-            {/* Icons */}
+            {/* =========================================
+                Icons
+                ========================================= */}
             <div className="flex items-center gap-2 text-xl sm:gap-3">
+              {/* Track order */}
               <Link
                 to="/track-order"
                 title="متابعة الطلب"
                 aria-label="متابعة الطلب"
-                className="flex h-11 w-11 items-center justify-center rounded-full text-gray-700 transition-all duration-300 hover:bg-green-50 hover:text-green-600 hover:shadow-md active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90"
               >
                 <FaUser />
               </Link>
 
+              {/* Wishlist */}
               <Link
                 to="/wishlist"
                 title="المفضلة"
                 aria-label="المفضلة"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full text-gray-700 transition-all duration-300 hover:bg-red-50 hover:text-red-500 hover:shadow-md active:scale-90"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90"
               >
                 <FaHeart />
 
                 {wishlistCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white shadow-md">
+                  <span className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[11px] font-bold text-white shadow-md">
                     {wishlistCount}
                   </span>
                 )}
               </Link>
 
+              {/* Cart */}
               <Link
                 to="/cart"
                 title="السلة"
                 aria-label="السلة"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full text-gray-700 transition-all duration-300 hover:bg-green-50 hover:text-green-600 hover:shadow-md active:scale-90"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90"
               >
                 {cartPopup && (
-                  <span className="pointer-events-none absolute -top-7 right-0 z-50 animate-[cartFly_1s_ease] rounded-full bg-green-600 px-2 py-1 text-xs font-bold text-white">
+                  <span className="pointer-events-none absolute -top-7 right-0 z-50 animate-[cartFly_1s_ease] rounded-full bg-[#b08d57] px-2 py-1 text-xs font-bold text-white">
                     +{cartPopup}
                   </span>
                 )}
@@ -274,7 +304,7 @@ function Header() {
 
                 {cartCount > 0 && (
                   <span
-                    className={`absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-green-600 px-1 text-[11px] font-bold text-white shadow-md ${
+                    className={`absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[11px] font-bold text-white shadow-md ${
                       cartAnimating ? "animate-[cartBadge_600ms_ease]" : ""
                     }`}
                   >
@@ -287,9 +317,12 @@ function Header() {
         </div>
       </header>
 
-      {/* Mobile Drawer */}
+      {/* =========================================
+          Mobile Drawer
+          ========================================= */}
       {menuOpen && (
         <div className="fixed inset-0 z-[2147483647] md:hidden">
+          {/* Overlay */}
           <div
             onClick={closeMenu}
             className={`absolute inset-0 backdrop-blur-sm transition-all duration-300 ${
@@ -297,31 +330,38 @@ function Header() {
             }`}
           />
 
+          {/* Drawer */}
           <div
-            className={`absolute right-0 top-0 z-[2147483647] flex h-full w-80 max-w-[85%] flex-col overflow-y-auto rounded-l-3xl bg-white shadow-2xl transition-all duration-300 ease-out ${
+            className={`absolute right-0 top-0 z-[2147483647] flex h-full w-80 max-w-[85%] flex-col overflow-y-auto rounded-l-3xl bg-[#faf8f3] shadow-2xl transition-all duration-300 ease-out ${
               drawerVisible
                 ? "translate-x-0 opacity-100"
                 : "translate-x-full opacity-0"
             }`}
           >
             {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b p-5">
+            <div className="flex items-center justify-between border-b border-[#e8e1d7] p-5">
               <Link
                 to="/"
                 onClick={closeMenu}
-                className="flex items-center gap-2"
+                className="group flex items-center gap-2"
               >
-                <FaBolt className="text-2xl text-green-600" />
+                <FaBolt className="text-2xl text-[#b08d57] transition-transform duration-300 group-hover:scale-110" />
 
-                <span className="text-xl font-bold text-green-700">
-                  شهدان ستور
-                </span>
+                <div className="flex flex-col leading-none">
+                  <span className="text-xl font-bold text-[#171717]">
+                    شهدان
+                  </span>
+
+                  <span className="mt-1 text-[8px] font-semibold tracking-[0.25em] text-[#b08d57]">
+                    SHAHDAN STORE
+                  </span>
+                </div>
               </Link>
 
               <button
                 type="button"
                 onClick={closeMenu}
-                className="text-2xl text-gray-500 hover:text-gray-800"
+                className="text-2xl text-[#737373] transition hover:text-[#b08d57]"
                 aria-label="إغلاق القائمة"
               >
                 <FaTimes />
@@ -331,19 +371,19 @@ function Header() {
             {/* Mobile Search */}
             <form
               onSubmit={handleSearchSubmit}
-              className="flex items-center gap-2 border-b p-5"
+              className="flex items-center gap-2 border-b border-[#e8e1d7] p-5"
             >
               <input
                 type="text"
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
                 placeholder="ابحث عن منتج..."
-                className="flex-1 rounded-xl border p-3 outline-none focus:border-green-600"
+                className="flex-1 rounded-xl border border-[#e8e1d7] bg-white p-3 text-sm outline-none transition focus:border-[#b08d57]"
               />
 
               <button
                 type="submit"
-                className="rounded-xl bg-green-600 p-3 text-white"
+                className="rounded-xl bg-[#171717] p-3 text-[#d4b477] transition hover:bg-[#b08d57] hover:text-white"
                 aria-label="بحث"
               >
                 <FaSearch />
@@ -351,14 +391,14 @@ function Header() {
             </form>
 
             {/* Mobile Navigation */}
-            <nav className="flex flex-col border-b p-3">
+            <nav className="flex flex-col border-b border-[#e8e1d7] p-3">
               <Link
                 to="/"
                 onClick={closeMenu}
                 className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
                   location.pathname === "/"
-                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
-                    : "hover:bg-green-50"
+                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
                 }`}
               >
                 الرئيسية
@@ -369,8 +409,8 @@ function Header() {
                 onClick={closeMenu}
                 className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
                   location.pathname === "/products"
-                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
-                    : "hover:bg-green-50"
+                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
                 }`}
               >
                 كل المنتجات
@@ -381,8 +421,8 @@ function Header() {
                 onClick={closeMenu}
                 className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
                   location.pathname === "/categories"
-                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
-                    : "hover:bg-green-50"
+                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
                 }`}
               >
                 التصنيفات
@@ -393,8 +433,8 @@ function Header() {
                 onClick={closeMenu}
                 className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
                   location.pathname === "/wishlist"
-                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
-                    : "hover:bg-green-50"
+                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
                 }`}
               >
                 المفضلة
@@ -405,8 +445,8 @@ function Header() {
                 onClick={closeMenu}
                 className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
                   location.pathname === "/track-order"
-                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
-                    : "hover:bg-green-50"
+                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
                 }`}
               >
                 متابعة الطلب
@@ -417,8 +457,8 @@ function Header() {
                 onClick={closeMenu}
                 className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
                   location.pathname === "/about"
-                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
-                    : "hover:bg-green-50"
+                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
                 }`}
               >
                 تواصل معنا
@@ -428,7 +468,7 @@ function Header() {
             {/* Categories */}
             {categories.length > 0 && (
               <div className="p-3">
-                <p className="px-3 py-2 text-sm font-semibold text-gray-400">
+                <p className="px-3 py-2 text-sm font-semibold text-[#b08d57]">
                   التصنيفات
                 </p>
 
@@ -437,11 +477,11 @@ function Header() {
                     key={cat.id}
                     type="button"
                     onClick={() => handleCategoryClick(cat.name)}
-                    className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-right hover:bg-green-50"
+                    className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-right text-[#242424] transition hover:bg-[#f3eadc] hover:text-[#b08d57]"
                   >
                     <span>{cat.name}</span>
 
-                    <FaChevronLeft className="text-xs text-gray-400" />
+                    <FaChevronLeft className="text-xs text-[#b08d57]" />
                   </button>
                 ))}
               </div>
@@ -450,7 +490,7 @@ function Header() {
         </div>
       )}
 
-      {/* مساحة حتى لا يغطي الهيدر المحتوى */}
+      {/* Space for fixed header */}
       <div
         className={
           settings?.announcementBar?.enabled ? "h-[128px]" : "h-[88px]"

@@ -5,12 +5,36 @@ html {
   scroll-behavior: smooth;
 }
 
+:root {
+  /* ================================
+     SHAHDAN BRAND COLORS
+     ================================ */
+
+  --shahdan-black: #171717;
+  --shahdan-black-soft: #242424;
+
+  --shahdan-gold: #b08d57;
+  --shahdan-gold-light: #d4b477;
+  --shahdan-gold-pale: #f3eadc;
+
+  --shahdan-ivory: #faf8f3;
+  --shahdan-white: #ffffff;
+
+  --shahdan-text: #242424;
+  --shahdan-text-soft: #737373;
+
+  --shahdan-border: #e8e1d7;
+}
+
 body {
   margin: 0;
   min-width: 320px;
-  background-color: #faf9f5;
-  color: #1f2937;
+
+  background-color: var(--shahdan-ivory);
+  color: var(--shahdan-text);
+
   font-family: Arial, sans-serif;
+
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
@@ -38,9 +62,34 @@ img {
 }
 
 ::selection {
-  background: #315c43;
-  color: #ffffff;
+  background: var(--shahdan-gold);
+  color: var(--shahdan-white);
 }
+
+/* ================================
+   SCROLLBAR
+   ================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--shahdan-ivory);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--shahdan-gold);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--shahdan-black-soft);
+}
+
+/* ================================
+   ANIMATIONS
+   ================================ */
 
 @keyframes fadeIn {
   from {
