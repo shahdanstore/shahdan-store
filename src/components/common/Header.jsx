@@ -1,0 +1,463 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import {
+  FaBolt,
+  FaSearch,
+  FaShoppingCart,
+  FaHeart,
+  FaUser,
+  FaBars,
+  FaTimes,
+  FaChevronLeft,
+} from "react-icons/fa";
+
+import { useCart } from "../../hooks/useCart";
+import { useWishlist } from "../../hooks/useWishlist";
+import { useStore } from "../../hooks/useStore";
+import { useSettings } from "../../hooks/useSettings";
+
+import { motion, AnimatePresence } from "framer-motion";
+
+function Header() {
+  const { cartCount } = useCart();
+  const { wishlistCount } = useWishlist();
+  const { categories } = useStore();
+  const { settings } = useSettings();
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [searchInput, setSearchInput] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [cartAnimating, setCartAnimating] = useState(false);
+  const [cartPopup, setCartPopup] = useState(null);
+  const [currentMessage, setCurrentMessage] = useState(0);
+
+  const messages = settings?.announcementBar?.messages ?? [
+    "🚚 الشحن مجاني للطلبات فوق 199 ريال",
+    "💳 الدفع عند الاستلام متوفر",
+    "✨ منتجات مختارة بعناية لجودة أفضل",
+  ];
+
+  const interval = settings?.announcementBar?.interval ?? 4000;
+
+  useEffect(() => {
+    if (messages.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setCurrentMessage((prev) => (prev + 1) % messages.length);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [messages.length, interval]);
+
+  useEffect(() => {
+    if (menuOpen) {
+      const timer = setTimeout(() => {
+        setDrawerVisible(true);
+      }, 10);
+
+      return () => clearTimeout(timer);
+    }
+  }, [menuOpen]);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  useEffect(() => {
+    const handler = (e) => {
+      setCartAnimating(true);
+      setCartPopup(e.detail?.quantity || 1);
+
+      const animationTimer = setTimeout(() => {
+        setCartAnimating(false);
+      }, 700);
+
+      const popupTimer = setTimeout(() => {
+        setCartPopup(null);
+      }, 1000);
+
+      return () => {
+        clearTimeout(animationTimer);
+        clearTimeout(popupTimer);
+      };
+    };
+
+    window.addEventListener("cart-animation", handler);
+
+    return () => {
+      window.removeEventListener("cart-animation", handler);
+    };
+  }, []);
+
+  const closeMenu = () => {
+    setDrawerVisible(false);
+
+    setTimeout(() => {
+      setMenuOpen(false);
+    }, 300);
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+
+    const query = searchInput.trim();
+
+    navigate(
+      query ? `/products?search=${encodeURIComponent(query)}` : "/products",
+    );
+
+    closeMenu();
+  };
+
+  const handleCategoryClick = (categoryName) => {
+    navigate(`/products?category=${encodeURIComponent(categoryName)}`);
+
+    closeMenu();
+  };
+
+  return (
+    <>
+      <header className="fixed left-0 right-0 top-0 z-[99990]">
+        {/* Announcement Bar */}
+        {settings?.announcementBar?.enabled && (
+          <div
+            className="h-10 overflow-hidden"
+            style={{
+              backgroundColor:
+                settings?.announcementBar?.backgroundColor || "#15803d",
+              color: settings?.announcementBar?.textColor || "#ffffff",
+            }}
+          >
+            <div className="relative flex h-full items-center justify-center overflow-hidden px-4">
+              <AnimatePresence initial={false}>
+                <motion.div
+                  key={currentMessage}
+                  initial={{ y: 24, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  exit={{ y: -24, opacity: 0 }}
+                  transition={{
+                    duration: 0.22,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="absolute inset-0 flex items-center justify-center will-change-transform"
+                >
+                  <span className="whitespace-nowrap text-sm font-medium">
+                    {messages[currentMessage]}
+                  </span>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        )}
+
+        {/* Main Header */}
+        <div className="border-b border-gray-100 bg-white/90 shadow-sm backdrop-blur-xl transition-all duration-300">
+          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
+            {/* Mobile menu button */}
+            <button
+              type="button"
+              onClick={() => {
+                setMenuOpen(true);
+                setDrawerVisible(false);
+              }}
+              className="text-2xl text-gray-700 md:hidden"
+              aria-label="فتح القائمة"
+            >
+              <FaBars />
+            </button>
+
+            {/* Logo */}
+            <Link to="/" className="flex items-center gap-2">
+              <FaBolt className="text-3xl text-green-600" />
+
+              <h1 className="text-2xl font-bold text-green-700 sm:text-3xl">
+                شهدان ستور
+              </h1>
+            </Link>
+
+            {/* Desktop Nav */}
+            <nav className="hidden gap-8 font-medium md:flex">
+              <Link to="/" className="transition hover:text-green-600">
+                الرئيسية
+              </Link>
+
+              <Link to="/products" className="transition hover:text-green-600">
+                كل المنتجات
+              </Link>
+
+              <Link
+                to="/categories"
+                className="transition hover:text-green-600"
+              >
+                التصنيفات
+              </Link>
+
+              <Link to="/about" className="transition hover:text-green-600">
+                تواصل معنا
+              </Link>
+            </nav>
+
+            {/* Desktop Search */}
+            <form
+              onSubmit={handleSearchSubmit}
+              className="hidden items-center overflow-hidden rounded-full border lg:flex"
+            >
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="ابحث عن منتج..."
+                className="w-64 px-4 py-2 outline-none"
+              />
+
+              <button
+                type="submit"
+                className="bg-green-600 px-4 py-3 text-white transition hover:bg-green-700"
+                aria-label="بحث"
+              >
+                <FaSearch />
+              </button>
+            </form>
+
+            {/* Icons */}
+            <div className="flex items-center gap-2 text-xl sm:gap-3">
+              <Link
+                to="/track-order"
+                title="متابعة الطلب"
+                aria-label="متابعة الطلب"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-gray-700 transition-all duration-300 hover:bg-green-50 hover:text-green-600 hover:shadow-md active:scale-90"
+              >
+                <FaUser />
+              </Link>
+
+              <Link
+                to="/wishlist"
+                title="المفضلة"
+                aria-label="المفضلة"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full text-gray-700 transition-all duration-300 hover:bg-red-50 hover:text-red-500 hover:shadow-md active:scale-90"
+              >
+                <FaHeart />
+
+                {wishlistCount > 0 && (
+                  <span className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1 text-[11px] font-bold text-white shadow-md">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Link>
+
+              <Link
+                to="/cart"
+                title="السلة"
+                aria-label="السلة"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full text-gray-700 transition-all duration-300 hover:bg-green-50 hover:text-green-600 hover:shadow-md active:scale-90"
+              >
+                {cartPopup && (
+                  <span className="pointer-events-none absolute -top-7 right-0 z-50 animate-[cartFly_1s_ease] rounded-full bg-green-600 px-2 py-1 text-xs font-bold text-white">
+                    +{cartPopup}
+                  </span>
+                )}
+
+                <FaShoppingCart
+                  className={`transition-all duration-500 ${
+                    cartAnimating
+                      ? "animate-[cartShake_800ms_cubic-bezier(.22,1,.36,1)]"
+                      : ""
+                  }`}
+                />
+
+                {cartCount > 0 && (
+                  <span
+                    className={`absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-green-600 px-1 text-[11px] font-bold text-white shadow-md ${
+                      cartAnimating ? "animate-[cartBadge_600ms_ease]" : ""
+                    }`}
+                  >
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Drawer */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-[2147483647] md:hidden">
+          <div
+            onClick={closeMenu}
+            className={`absolute inset-0 backdrop-blur-sm transition-all duration-300 ${
+              drawerVisible ? "bg-black/50 opacity-100" : "bg-black/0 opacity-0"
+            }`}
+          />
+
+          <div
+            className={`absolute right-0 top-0 z-[2147483647] flex h-full w-80 max-w-[85%] flex-col overflow-y-auto rounded-l-3xl bg-white shadow-2xl transition-all duration-300 ease-out ${
+              drawerVisible
+                ? "translate-x-0 opacity-100"
+                : "translate-x-full opacity-0"
+            }`}
+          >
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between border-b p-5">
+              <Link
+                to="/"
+                onClick={closeMenu}
+                className="flex items-center gap-2"
+              >
+                <FaBolt className="text-2xl text-green-600" />
+
+                <span className="text-xl font-bold text-green-700">
+                  شهدان ستور
+                </span>
+              </Link>
+
+              <button
+                type="button"
+                onClick={closeMenu}
+                className="text-2xl text-gray-500 hover:text-gray-800"
+                aria-label="إغلاق القائمة"
+              >
+                <FaTimes />
+              </button>
+            </div>
+
+            {/* Mobile Search */}
+            <form
+              onSubmit={handleSearchSubmit}
+              className="flex items-center gap-2 border-b p-5"
+            >
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="ابحث عن منتج..."
+                className="flex-1 rounded-xl border p-3 outline-none focus:border-green-600"
+              />
+
+              <button
+                type="submit"
+                className="rounded-xl bg-green-600 p-3 text-white"
+                aria-label="بحث"
+              >
+                <FaSearch />
+              </button>
+            </form>
+
+            {/* Mobile Navigation */}
+            <nav className="flex flex-col border-b p-3">
+              <Link
+                to="/"
+                onClick={closeMenu}
+                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
+                  location.pathname === "/"
+                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
+                    : "hover:bg-green-50"
+                }`}
+              >
+                الرئيسية
+              </Link>
+
+              <Link
+                to="/products"
+                onClick={closeMenu}
+                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
+                  location.pathname === "/products"
+                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
+                    : "hover:bg-green-50"
+                }`}
+              >
+                كل المنتجات
+              </Link>
+
+              <Link
+                to="/categories"
+                onClick={closeMenu}
+                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
+                  location.pathname === "/categories"
+                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
+                    : "hover:bg-green-50"
+                }`}
+              >
+                التصنيفات
+              </Link>
+
+              <Link
+                to="/wishlist"
+                onClick={closeMenu}
+                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
+                  location.pathname === "/wishlist"
+                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
+                    : "hover:bg-green-50"
+                }`}
+              >
+                المفضلة
+              </Link>
+
+              <Link
+                to="/track-order"
+                onClick={closeMenu}
+                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
+                  location.pathname === "/track-order"
+                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
+                    : "hover:bg-green-50"
+                }`}
+              >
+                متابعة الطلب
+              </Link>
+
+              <Link
+                to="/about"
+                onClick={closeMenu}
+                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
+                  location.pathname === "/about"
+                    ? "bg-green-100 font-semibold text-green-700 shadow-sm"
+                    : "hover:bg-green-50"
+                }`}
+              >
+                تواصل معنا
+              </Link>
+            </nav>
+
+            {/* Categories */}
+            {categories.length > 0 && (
+              <div className="p-3">
+                <p className="px-3 py-2 text-sm font-semibold text-gray-400">
+                  التصنيفات
+                </p>
+
+                {categories.map((cat) => (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    onClick={() => handleCategoryClick(cat.name)}
+                    className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-right hover:bg-green-50"
+                  >
+                    <span>{cat.name}</span>
+
+                    <FaChevronLeft className="text-xs text-gray-400" />
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* مساحة حتى لا يغطي الهيدر المحتوى */}
+      <div
+        className={
+          settings?.announcementBar?.enabled ? "h-[128px]" : "h-[88px]"
+        }
+      />
+    </>
+  );
+}
+
+export default Header;

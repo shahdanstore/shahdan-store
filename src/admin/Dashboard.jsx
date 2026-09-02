@@ -1,0 +1,351 @@
+import { useEffect, useRef, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+
+import { db } from "../firebase/config";
+
+import {
+  FaBox,
+  FaShoppingCart,
+  FaMoneyBillWave,
+  FaClock,
+  FaTags,
+  FaExclamationTriangle,
+  FaEye,
+} from "react-icons/fa";
+
+import { useStore } from "../hooks/useStore";
+import { useOrders } from "../hooks/useOrders";
+
+import AdminLayout from "../components/layout/AdminLayout";
+
+function Dashboard() {
+  const { products, categories } = useStore();
+  const { orders, totalRevenue } = useOrders();
+
+  const [newOrdersCount, setNewOrdersCount] = useState(0);
+  const [visits, setVisits] = useState(0);
+
+  // عدد زيارات المتجر
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      doc(db, "stats", "visits"),
+      (snapshot) => {
+        setVisits(snapshot.data()?.total || 0);
+      },
+      (error) => {
+        console.error("Visits Firebase Error:", error);
+      },
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  const previousOrdersCount = useRef(0);
+
+  const notificationSound = useRef(null);
+  const audioUnlocked = useRef(false);
+
+  // تجهيز صوت إشعار الطلبات
+  useEffect(() => {
+    notificationSound.current = new Audio("/sounds/order.mp3");
+
+    notificationSound.current.volume = 1;
+
+    const unlockAudio = () => {
+      if (audioUnlocked.current) return;
+
+      notificationSound.current
+        ?.play()
+        .then(() => {
+          notificationSound.current.pause();
+          notificationSound.current.currentTime = 0;
+
+          audioUnlocked.current = true;
+        })
+        .catch(() => {});
+
+      window.removeEventListener("click", unlockAudio);
+    };
+
+    window.addEventListener("click", unlockAudio);
+
+    return () => {
+      window.removeEventListener("click", unlockAudio);
+    };
+  }, []);
+
+  // مراقبة الطلبات الجديدة
+  useEffect(() => {
+    if (previousOrdersCount.current === 0) {
+      previousOrdersCount.current = orders.length;
+      return;
+    }
+
+    if (orders.length > previousOrdersCount.current) {
+      const diff = orders.length - previousOrdersCount.current;
+
+      setNewOrdersCount((prev) => prev + diff);
+
+      notificationSound.current?.play().catch(() => {});
+    }
+
+    previousOrdersCount.current = orders.length;
+  }, [orders]);
+
+  const lowStockProducts = products.filter(
+    (product) => Number(product.stock || 0) <= 5,
+  );
+
+  const pendingOrdersCount = orders.filter(
+    (order) => order.status === "pending",
+  ).length;
+
+  const latestProducts = [...products].reverse().slice(0, 5);
+
+  const latestOrders = [...orders].reverse().slice(0, 5);
+
+  return (
+    <AdminLayout newOrdersCount={newOrdersCount}>
+      {/* تنبيه الطلبات الجديدة */}
+      {newOrdersCount > 0 && (
+        <div className="mt-6 rounded-3xl border border-blue-200 bg-blue-50 p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="font-bold text-blue-700">🔔 طلبات جديدة</h3>
+
+              <p className="mt-1 text-gray-600">
+                لديك {newOrdersCount} طلب جديد
+              </p>
+            </div>
+
+            <button
+              onClick={() => setNewOrdersCount(0)}
+              className="rounded-xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            >
+              تم
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* الإحصائيات الرئيسية */}
+      <div
+        className="
+          mt-8 grid
+          grid-cols-1
+          gap-4
+          sm:grid-cols-2
+          xl:grid-cols-5
+        "
+      >
+        {/* المنتجات */}
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-gray-500">المنتجات</h3>
+
+              <p className="mt-3 text-4xl font-bold text-green-700">
+                {products.length}
+              </p>
+            </div>
+
+            <FaBox className="text-4xl text-green-600" />
+          </div>
+        </div>
+
+        {/* الزيارات */}
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-gray-500">زيارات المتجر</h3>
+
+              <p className="mt-3 text-4xl font-bold text-purple-600">
+                {visits.toLocaleString("ar-SA")}
+              </p>
+            </div>
+
+            <FaEye className="text-4xl text-purple-500" />
+          </div>
+        </div>
+
+        {/* الطلبات */}
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-gray-500">الطلبات</h3>
+
+                {newOrdersCount > 0 && (
+                  <span className="flex h-6 min-w-6 animate-pulse items-center justify-center rounded-full bg-red-500 px-2 text-xs text-white">
+                    {newOrdersCount}
+                  </span>
+                )}
+              </div>
+
+              <p className="mt-3 text-4xl font-bold text-blue-600">
+                {orders.length}
+              </p>
+            </div>
+
+            <FaShoppingCart className="text-4xl text-blue-500" />
+          </div>
+        </div>
+
+        {/* المبيعات */}
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-gray-500">المبيعات</h3>
+
+              <p className="mt-3 text-4xl font-bold text-orange-500">
+                {totalRevenue.toLocaleString("ar-SA")} ر.س
+              </p>
+            </div>
+
+            <FaMoneyBillWave className="text-4xl text-orange-500" />
+          </div>
+        </div>
+
+        {/* قيد الانتظار */}
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-gray-500">قيد الانتظار</h3>
+
+              <p className="mt-3 text-4xl font-bold text-red-600">
+                {pendingOrdersCount}
+              </p>
+            </div>
+
+            <FaClock className="text-4xl text-red-500" />
+          </div>
+        </div>
+      </div>
+
+      {/* الإحصائيات الثانوية */}
+      <div
+        className="
+          mt-6 grid
+          grid-cols-1
+          gap-4
+          md:grid-cols-2
+        "
+      >
+        {/* التصنيفات */}
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-gray-500">التصنيفات</h3>
+
+              <p className="mt-3 text-3xl font-bold text-purple-600">
+                {categories.length}
+              </p>
+            </div>
+
+            <FaTags className="text-4xl text-purple-500" />
+          </div>
+        </div>
+
+        {/* المخزون المنخفض */}
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-gray-500">مخزون منخفض</h3>
+
+              <p className="mt-3 text-3xl font-bold text-red-500">
+                {lowStockProducts.length}
+              </p>
+            </div>
+
+            <FaExclamationTriangle className="text-4xl text-red-500" />
+          </div>
+        </div>
+      </div>
+
+      {/* أحدث المنتجات */}
+      <div
+        className="
+          mt-8 grid
+          grid-cols-1
+          gap-6
+          xl:grid-cols-2
+        "
+      >
+        <div className="rounded-3xl bg-white p-6 shadow">
+          <h3 className="mb-5 text-xl font-bold">أحدث المنتجات</h3>
+
+          <div className="space-y-4">
+            {latestProducts.length === 0 ? (
+              <p className="text-gray-500">لا توجد منتجات.</p>
+            ) : (
+              latestProducts.map((product) => (
+                <div
+                  key={product.id}
+                  className="
+                      flex flex-col gap-3
+                      border-b pb-3
+                      sm:flex-row
+                      sm:items-center
+                      sm:justify-between
+                    "
+                >
+                  <div>
+                    <p className="font-semibold">{product.name}</p>
+
+                    <p className="text-sm text-gray-500">
+                      {product.category || "بدون تصنيف"}
+                    </p>
+                  </div>
+
+                  <span className="font-bold text-green-600">
+                    {Number(product.price || 0).toLocaleString("ar-SA")} ر.س
+                  </span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* مساحة جاهزة لأحدث الطلبات */}
+      </div>
+
+      {/* أحدث الطلبات */}
+      <div className="mt-8 rounded-3xl bg-white p-6 shadow">
+        <h3 className="mb-5 text-xl font-bold">أحدث الطلبات</h3>
+
+        <div className="space-y-4">
+          {latestOrders.length === 0 ? (
+            <p className="text-gray-500">لا توجد طلبات.</p>
+          ) : (
+            latestOrders.map((order) => (
+              <div
+                key={order.id}
+                className="
+                  flex flex-col gap-3
+                  border-b pb-3
+                  sm:flex-row
+                  sm:items-center
+                  sm:justify-between
+                "
+              >
+                <div>
+                  <p className="font-semibold">
+                    {order.customer?.name || "عميل"}
+                  </p>
+
+                  <p className="text-sm text-gray-500">{order.status}</p>
+                </div>
+
+                <span className="font-bold text-blue-600">
+                  {Number(order.total || 0).toLocaleString("ar-SA")} ر.س
+                </span>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </AdminLayout>
+  );
+}
+
+export default Dashboard;
