@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
-  FaBolt,
   FaSearch,
   FaShoppingCart,
   FaHeart,
@@ -180,8 +179,14 @@ function Header() {
             {/* =========================================
                 Logo
                 ========================================= */}
-            <Link to="/" className="group flex items-center gap-2">
-              <FaBolt className="text-3xl text-[#b08d57] transition-transform duration-300 group-hover:scale-110" />
+            <Link to="/" className="group flex items-center gap-3">
+              <div className="h-12 w-12 overflow-hidden rounded-full border border-[#d4b477]/40 bg-white shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-md sm:h-14 sm:w-14">
+                <img
+                  src="/logo.png"
+                  alt="شهدان ستور"
+                  className="h-full w-full object-cover"
+                />
+              </div>
 
               <div className="flex flex-col leading-none">
                 <h1 className="text-2xl font-bold tracking-tight text-[#171717] sm:text-3xl">
@@ -338,17 +343,23 @@ function Header() {
                 : "translate-x-full opacity-0"
             }`}
           >
-            {/* Drawer Header */}
-            <div className="flex items-center justify-between border-b border-[#e8e1d7] p-5">
+            <div className="flex items-center justify-between border-b border-[#e8e1d7] bg-[#faf8f3] px-5 py-4">
+              {/* الشعار */}
               <Link
                 to="/"
                 onClick={closeMenu}
-                className="group flex items-center gap-2"
+                className="group flex items-center gap-3"
               >
-                <FaBolt className="text-2xl text-[#b08d57] transition-transform duration-300 group-hover:scale-110" />
+                <div className="h-11 w-11 overflow-hidden rounded-full border border-[#d4b477]/40 bg-white shadow-sm transition-transform duration-300 group-hover:scale-105">
+                  <img
+                    src="/logo.png"
+                    alt="شهدان ستور"
+                    className="h-full w-full object-cover"
+                  />
+                </div>
 
                 <div className="flex flex-col leading-none">
-                  <span className="text-xl font-bold text-[#171717]">
+                  <span className="text-xl font-bold tracking-tight text-[#171717]">
                     شهدان
                   </span>
 
@@ -358,10 +369,11 @@ function Header() {
                 </div>
               </Link>
 
+              {/* زر الإغلاق */}
               <button
                 type="button"
                 onClick={closeMenu}
-                className="text-2xl text-[#737373] transition hover:text-[#b08d57]"
+                className="flex h-10 w-10 items-center justify-center rounded-xl text-xl text-[#242424] transition hover:bg-[#f3eadc] hover:text-[#b08d57]"
                 aria-label="إغلاق القائمة"
               >
                 <FaTimes />
