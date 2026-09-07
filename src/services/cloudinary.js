@@ -1,5 +1,5 @@
-const CLOUD_NAME = "uhgjzlgn";
-const UPLOAD_PRESET = "oshbah_products";
+const CLOUD_NAME = "shahdan-store";
+const UPLOAD_PRESET = "shahdan_products";
 
 export async function uploadToCloudinary(file) {
   const formData = new FormData();
@@ -18,6 +18,7 @@ export async function uploadToCloudinary(file) {
   const data = await response.json();
 
   if (!data.secure_url) {
+    console.error("Cloudinary upload error:", data);
     throw new Error("فشل رفع الصورة");
   }
 
