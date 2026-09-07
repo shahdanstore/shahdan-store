@@ -477,11 +477,30 @@ function Header() {
                     key={cat.id}
                     type="button"
                     onClick={() => handleCategoryClick(cat.name)}
-                    className="flex w-full items-center justify-between rounded-xl px-3 py-3 text-right text-[#242424] transition hover:bg-[#f3eadc] hover:text-[#b08d57]"
+                    className="group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-right text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57]"
                   >
-                    <span>{cat.name}</span>
+                    {/* صورة التصنيف */}
+                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-[#e8e1d7] bg-white shadow-sm">
+                      {cat.image ? (
+                        <img
+                          src={cat.image}
+                          alt={cat.name}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-xs text-[#b08d57]">
+                          صورة
+                        </div>
+                      )}
+                    </div>
 
-                    <FaChevronLeft className="text-xs text-[#b08d57]" />
+                    {/* اسم التصنيف */}
+                    <span className="flex-1 text-sm font-medium">
+                      {cat.name}
+                    </span>
+
+                    <FaChevronLeft className="text-xs text-[#b08d57] transition-transform duration-300 group-hover:-translate-x-1" />
                   </button>
                 ))}
               </div>
