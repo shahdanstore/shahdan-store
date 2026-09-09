@@ -6,6 +6,10 @@ import {
   FaMinus,
   FaPlus,
   FaHeart,
+  FaTruck,
+  FaShieldAlt,
+  FaMoneyBillWave,
+  FaHeadset,
 } from "react-icons/fa";
 
 import { useCart } from "../../hooks/useCart";
@@ -77,262 +81,342 @@ function ProductActions({ product }) {
   };
 
   return (
-    <div className="mt-10 rounded-3xl border border-green-100 bg-green-50 p-6">
-      {/* Quantity */}
-      <div className="mb-6">
-        <p className="mb-3 font-bold text-gray-700">الكمية المطلوبة</p>
+    <div className="mt-10">
+      {/* Purchase Panel */}
+      <div className="overflow-hidden rounded-[30px] border border-[#e8dfd0] bg-white shadow-[0_16px_50px_rgba(48,41,31,0.08)]">
+        {/* Header */}
+        <div className="border-b border-[#eee5d5] px-5 py-5 sm:px-7">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-[10px] font-extrabold tracking-[0.25em] text-[#b88a44]">
+                SHAHDAN STORE
+              </p>
 
-        <div className="flex w-fit items-center overflow-hidden rounded-2xl border bg-white shadow-sm">
-          <button
-            type="button"
-            onClick={decrease}
-            disabled={outOfStock || quantity <= 1}
-            className="
-              px-5 py-4 text-gray-600
-              transition hover:bg-gray-100
-              disabled:cursor-not-allowed
-              disabled:opacity-40
-            "
-            aria-label="تقليل الكمية"
-          >
-            <FaMinus />
-          </button>
+              <h3 className="mt-1 text-lg font-extrabold text-[#30291f]">
+                أضف المنتج إلى طلبك
+              </h3>
+            </div>
 
-          <span className="min-w-[70px] text-center text-xl font-bold">
-            {quantity}
-          </span>
-
-          <button
-            type="button"
-            onClick={increase}
-            disabled={outOfStock || quantity >= stock}
-            className="
-              px-5 py-4 text-gray-600
-              transition hover:bg-gray-100
-              disabled:cursor-not-allowed
-              disabled:opacity-40
-            "
-            aria-label="زيادة الكمية"
-          >
-            <FaPlus />
-          </button>
+            {stock > 0 && stock <= 5 && (
+              <span className="rounded-full bg-[#fff8e9] px-3 py-1.5 text-[11px] font-bold text-[#9d7337]">
+                كمية محدودة
+              </span>
+            )}
+          </div>
         </div>
-      </div>
 
-      {/* Buttons */}
-      <div className="flex flex-col gap-4">
-        {/* Buy Now */}
-        <button
-          type="button"
-          onClick={handleBuyNow}
-          disabled={outOfStock}
-          className="
-            group
-            relative
-            flex
-            h-14
-            w-full
-            items-center
-            justify-center
-            gap-2
-            overflow-hidden
-            rounded-xl
-            bg-gradient-to-r
-            from-emerald-600
-            via-green-600
-            to-emerald-700
-            text-base
-            font-bold
-            text-white
-            shadow-lg
-            transition-all
-            duration-300
-            hover:-translate-y-0.5
-            hover:shadow-2xl
-            active:scale-[0.98]
-            disabled:cursor-not-allowed
-            disabled:opacity-60
-          "
-        >
-          {/* Shine */}
-          <span className="absolute inset-0 overflow-hidden rounded-xl">
+        <div className="p-5 sm:p-7">
+          {/* Quantity */}
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-bold text-[#30291f]">الكمية</p>
+
+              <p className="mt-1 text-xs text-[#8a8175]">
+                اختر الكمية المطلوبة
+              </p>
+            </div>
+
+            <div className="flex h-12 items-center rounded-xl border border-[#ded3c2] bg-[#fcfaf6]">
+              <button
+                type="button"
+                onClick={decrease}
+                disabled={outOfStock || quantity <= 1}
+                className="
+                  flex h-12 w-11 items-center justify-center
+                  text-[#5f574c]
+                  transition
+                  hover:bg-[#f5ead5]
+                  hover:text-[#8a642f]
+                  disabled:cursor-not-allowed
+                  disabled:opacity-30
+                "
+                aria-label="تقليل الكمية"
+              >
+                <FaMinus className="text-xs" />
+              </button>
+
+              <span className="flex h-12 min-w-[48px] items-center justify-center border-x border-[#e8dfd0] text-base font-extrabold text-[#30291f]">
+                {quantity}
+              </span>
+
+              <button
+                type="button"
+                onClick={increase}
+                disabled={outOfStock || quantity >= stock}
+                className="
+                  flex h-12 w-11 items-center justify-center
+                  text-[#5f574c]
+                  transition
+                  hover:bg-[#f5ead5]
+                  hover:text-[#8a642f]
+                  disabled:cursor-not-allowed
+                  disabled:opacity-30
+                "
+                aria-label="زيادة الكمية"
+              >
+                <FaPlus className="text-xs" />
+              </button>
+            </div>
+          </div>
+
+          {/* Main Button */}
+          <button
+            type="button"
+            onClick={handleBuyNow}
+            disabled={outOfStock}
+            className="
+              group
+              relative
+              mt-6
+              flex
+              h-[62px]
+              w-full
+              items-center
+              justify-center
+              gap-3
+              overflow-hidden
+              rounded-2xl
+              bg-[#30291f]
+              text-base
+              font-extrabold
+              text-white
+              shadow-[0_10px_25px_rgba(48,41,31,0.18)]
+              transition-all
+              duration-300
+              hover:-translate-y-0.5
+              hover:bg-[#3d3428]
+              hover:shadow-[0_15px_30px_rgba(48,41,31,0.22)]
+              active:scale-[0.985]
+              disabled:cursor-not-allowed
+              disabled:opacity-50
+            "
+          >
             <span
               className="
+                pointer-events-none
                 absolute
+                inset-y-0
                 -left-20
-                top-0
-                h-full
-                w-10
-                -skew-x-12
-                bg-white/25
-                blur-[2px]
-                animate-[shine_3s_linear_infinite]
+                w-12
+                rotate-[20deg]
+                bg-white/10
+                blur-sm
+                transition-all
+                duration-700
+                group-hover:left-[110%]
               "
             />
-          </span>
 
-          <span className="relative text-xl">⚡</span>
+            <span className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#b88a44] text-lg">
+              🚀
+            </span>
 
-          <span className="relative">اشترِ الآن</span>
-        </button>
-
-        <div className="flex gap-3">
-          {/* Add To Cart */}
-          <button
-            type="button"
-            onClick={handleAddToCart}
-            disabled={outOfStock}
-            className={`
-              group
-              flex
-              h-14
-              flex-1
-              items-center
-              justify-center
-              gap-2
-              rounded-xl
-              text-base
-              font-bold
-              shadow-md
-              transition-all
-              duration-300
-              active:scale-[0.98]
-              disabled:cursor-not-allowed
-              disabled:opacity-60
-
-              ${
-                added
-                  ? "bg-green-800 text-white"
-                  : "border border-green-600 bg-white text-green-700 hover:bg-green-50 hover:shadow-lg"
-              }
-            `}
-          >
-            {added ? (
-              <>
-                <FaCheck className="text-xl" />
-                تمت الإضافة
-              </>
-            ) : (
-              <>
-                <FaShoppingCart className="text-xl transition-transform group-hover:scale-110" />
-                أضف للسلة
-              </>
-            )}
+            <span className="relative">اشترِ الآن</span>
           </button>
 
-          {/* Wishlist */}
-          <button
-            type="button"
-            onClick={() => toggleWishlist(product.id)}
-            className={`
-              flex
-              h-14
-              w-14
-              items-center
-              justify-center
-              rounded-xl
-              text-lg
-              transition-all
-              duration-300
-              active:scale-95
+          {/* Secondary Actions */}
+          <div className="mt-3 flex gap-3">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={outOfStock}
+              className={`
+                group
+                flex
+                h-14
+                flex-1
+                items-center
+                justify-center
+                gap-2
+                rounded-2xl
+                border
+                text-sm
+                font-bold
+                transition-all
+                duration-300
+                active:scale-[0.98]
+                disabled:cursor-not-allowed
+                disabled:opacity-50
 
-              ${
-                inWishlist
-                  ? "bg-red-500 text-white shadow-lg"
-                  : "border border-gray-200 bg-white text-gray-500 hover:border-red-300 hover:bg-red-50 hover:text-red-500"
-              }
-            `}
-            aria-label={inWishlist ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
-          >
-            <FaHeart />
-          </button>
+                ${
+                  added
+                    ? "border-[#8a642f] bg-[#8a642f] text-white shadow-md"
+                    : "border-[#d8c7aa] bg-[#fffdf9] text-[#8a642f] hover:border-[#b88a44] hover:bg-[#fdf8ee]"
+                }
+              `}
+            >
+              {added ? (
+                <>
+                  <FaCheck className="text-base" />
+                  تمت الإضافة
+                </>
+              ) : (
+                <>
+                  <FaShoppingCart className="text-base transition-transform group-hover:-translate-x-1" />
+                  أضف للسلة
+                </>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => toggleWishlist(product.id)}
+              className={`
+                flex
+                h-14
+                w-14
+                shrink-0
+                items-center
+                justify-center
+                rounded-2xl
+                border
+                transition-all
+                duration-300
+                active:scale-95
+
+                ${
+                  inWishlist
+                    ? "border-[#b88a44] bg-[#b88a44] text-white shadow-md"
+                    : "border-[#e5dccd] bg-white text-[#8a8175] hover:border-[#b88a44] hover:bg-[#fdf8ee] hover:text-[#b88a44]"
+                }
+              `}
+              aria-label={inWishlist ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+            >
+              <FaHeart
+                className={`transition-transform ${
+                  inWishlist ? "scale-110" : ""
+                }`}
+              />
+            </button>
+          </div>
+
+          {/* Benefits */}
+          <div className="mt-7 grid grid-cols-2 border-y border-[#eee5d5] py-5">
+            <div className="flex items-center gap-3 border-l border-[#eee5d5] pl-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8f3e8] text-[#b88a44]">
+                <FaTruck className="text-sm" />
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-[#30291f]">شحن سريع</p>
+                <p className="mt-1 text-[10px] text-[#8a8175]">داخل المملكة</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 pr-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8f3e8] text-[#b88a44]">
+                <FaMoneyBillWave className="text-sm" />
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-[#30291f]">
+                  الدفع عند الاستلام
+                </p>
+                <p className="mt-1 text-[10px] text-[#8a8175]">
+                  عند وصول الطلب
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex items-center gap-3 border-l border-[#eee5d5] pl-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8f3e8] text-[#b88a44]">
+                <FaShieldAlt className="text-sm" />
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-[#30291f]">شراء آمن</p>
+                <p className="mt-1 text-[10px] text-[#8a8175]">
+                  حماية معلوماتك
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 flex items-center gap-3 pr-3">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f8f3e8] text-[#b88a44]">
+                <FaHeadset className="text-sm" />
+              </div>
+
+              <div>
+                <p className="text-xs font-bold text-[#30291f]">خدمة العملاء</p>
+                <p className="mt-1 text-[10px] text-[#8a8175]">
+                  دعم عند الحاجة
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Journey */}
+          <div className="mt-6">
+            <div className="mb-5 flex items-center justify-between">
+              <h3 className="text-sm font-extrabold text-[#30291f]">
+                رحلة طلبك
+              </h3>
+
+              <span className="text-[10px] font-bold text-[#b88a44]">
+                4 خطوات بسيطة
+              </span>
+            </div>
+
+            <div className="grid grid-cols-4 gap-1">
+              <div className="text-center">
+                <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#30291f] text-xs font-bold text-white">
+                  01
+                </div>
+
+                <p className="mt-2 text-[10px] font-bold text-[#5f574c]">
+                  الطلب
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#30291f] text-xs font-bold text-white">
+                  02
+                </div>
+
+                <p className="mt-2 text-[10px] font-bold text-[#5f574c]">
+                  التجهيز
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#30291f] text-xs font-bold text-white">
+                  03
+                </div>
+
+                <p className="mt-2 text-[10px] font-bold text-[#5f574c]">
+                  الشحن
+                </p>
+              </div>
+
+              <div className="text-center">
+                <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#b88a44] text-xs font-bold text-white">
+                  04
+                </div>
+
+                <p className="mt-2 text-[10px] font-bold text-[#5f574c]">
+                  الاستلام
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Stock */}
+          {stock > 0 && stock <= 5 && (
+            <div className="mt-6 flex items-center justify-center gap-2 rounded-xl border border-[#ead7b5] bg-[#fffaf0] px-4 py-3 text-xs font-bold text-[#8a642f]">
+              <span className="text-base">🔥</span>
+              <span>
+                متبقي فقط {stock} {stock === 1 ? "قطعة" : "قطع"}
+              </span>
+            </div>
+          )}
+
+          {outOfStock && (
+            <div className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm font-bold text-red-600">
+              المنتج غير متوفر حالياً
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Purchase Benefits */}
-      <div className="mt-5 rounded-3xl border border-green-200 bg-white p-4">
-        <div className="grid gap-3 text-sm text-gray-700 sm:grid-cols-2">
-          <div className="flex items-center gap-2">
-            <span>🚚</span>
-            <span>شحن سريع لجميع مناطق المملكة</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span>💵</span>
-            <span>الدفع عند الاستلام</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span>🔒</span>
-            <span>طلبك ومعلوماتك محفوظة وآمنة</span>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span>📞</span>
-            <span>دعم عبر واتساب عند الحاجة</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Order Steps */}
-      <div className="mt-5 rounded-2xl border border-dashed border-green-200 bg-green-50 p-5">
-        <h3 className="mb-4 text-center font-bold text-gray-800">
-          كيف تتم عملية الطلب؟
-        </h3>
-
-        <div className="grid grid-cols-4 gap-2 text-center">
-          <div>
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-xl text-white">
-              🛒
-            </div>
-
-            <p className="mt-2 text-xs font-semibold text-gray-700">
-              اطلب الآن
-            </p>
-          </div>
-
-          <div>
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-xl text-white">
-              📦
-            </div>
-
-            <p className="mt-2 text-xs font-semibold text-gray-700">
-              تجهيز الطلب
-            </p>
-          </div>
-
-          <div>
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-xl text-white">
-              🚚
-            </div>
-
-            <p className="mt-2 text-xs font-semibold text-gray-700">الشحن</p>
-          </div>
-
-          <div>
-            <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-600 text-xl text-white">
-              💵
-            </div>
-
-            <p className="mt-2 text-xs font-semibold text-gray-700">
-              الدفع عند الاستلام
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stock Warning */}
-      {stock > 0 && stock <= 5 && (
-        <div className="mt-5 rounded-2xl bg-orange-100 p-4 text-center font-semibold text-orange-700">
-          🔥 أسرع بالطلب، متبقي فقط {stock} قطع
-        </div>
-      )}
-
-      {outOfStock && (
-        <div className="mt-5 rounded-2xl bg-red-100 p-4 text-center font-semibold text-red-600">
-          ❌ المنتج غير متوفر حالياً
-        </div>
-      )}
     </div>
   );
 }
