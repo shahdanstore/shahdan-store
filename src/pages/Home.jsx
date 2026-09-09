@@ -23,33 +23,106 @@ export default function Home() {
   }, [settings]);
 
   return (
-    <div
+    <main
       className={`min-h-screen ${
-        settings.theme?.darkMode ? "bg-gray-900 text-white" : "bg-gray-50"
+        settings.theme?.darkMode
+          ? "bg-[#211d18] text-white"
+          : "bg-[#f8f3e8] text-[#30291f]"
       }`}
       style={{
-        "--primary": settings.theme?.primaryColor,
+        "--primary": settings.theme?.primaryColor || "#b88a44",
+        "--shahdan-gold": "#b88a44",
+        "--shahdan-dark-gold": "#8a642f",
+        "--shahdan-beige": "#f8f3e8",
+        "--shahdan-dark": "#30291f",
+        "--shahdan-text": "#5f574c",
+        "--shahdan-border": "#eadfca",
       }}
     >
-      {settings.home?.showHero && <Hero />}
+      {/* =========================================================
+          HERO
+      ========================================================== */}
+      {settings.home?.showHero && (
+        <section id="hero" className="relative">
+          <Hero />
+        </section>
+      )}
 
-      <div className="space-y-20 py-12">
-        {settings.home?.showCategories && (
-          <section id="categories">
-            <Categories />
-          </section>
+      {/* =========================================================
+          HOME SECTIONS
+      ========================================================== */}
+      <div
+        className={`relative overflow-hidden ${
+          settings.theme?.darkMode
+            ? "bg-[#211d18]"
+            : "bg-gradient-to-b from-[#f8f3e8] via-white to-[#f8f3e8]"
+        }`}
+      >
+        {/* Decorative background elements */}
+        {!settings.theme?.darkMode && (
+          <>
+            <div className="pointer-events-none absolute right-[-120px] top-[180px] h-72 w-72 rounded-full bg-[#b88a44]/5 blur-3xl" />
+
+            <div className="pointer-events-none absolute left-[-140px] top-[700px] h-80 w-80 rounded-full bg-[#c7a15a]/5 blur-3xl" />
+
+            <div className="pointer-events-none absolute right-[-100px] top-[1500px] h-72 w-72 rounded-full bg-[#b88a44]/5 blur-3xl" />
+          </>
         )}
 
-        {settings.discounts?.flashSaleEnabled && <OffersSection />}
+        <div className="relative space-y-16 py-10 md:space-y-24 md:py-16">
+          {/* =====================================================
+              CATEGORIES
+          ====================================================== */}
+          {settings.home?.showCategories && (
+            <section id="categories" className="scroll-mt-28">
+              <Categories />
+            </section>
+          )}
 
-        {settings.home?.showBestSellers && <FeaturedProducts />}
+          {/* =====================================================
+              FLASH SALE
+          ====================================================== */}
+          {settings.discounts?.flashSaleEnabled && (
+            <section id="offers">
+              <OffersSection />
+            </section>
+          )}
 
-        <WhyUs />
+          {/* =====================================================
+              BEST SELLERS
+          ====================================================== */}
+          {settings.home?.showBestSellers && (
+            <section id="featured-products">
+              <FeaturedProducts />
+            </section>
+          )}
 
-        {settings.home?.showLatestProducts && <NewProducts />}
+          {/* =====================================================
+              WHY SHAHDAN
+          ====================================================== */}
+          <section id="why-shahdan">
+            <WhyUs />
+          </section>
 
-        {settings.popups?.newsletterEnabled && <Newsletter />}
+          {/* =====================================================
+              NEW PRODUCTS
+          ====================================================== */}
+          {settings.home?.showLatestProducts && (
+            <section id="new-products">
+              <NewProducts />
+            </section>
+          )}
+
+          {/* =====================================================
+              NEWSLETTER
+          ====================================================== */}
+          {settings.popups?.newsletterEnabled && (
+            <section id="newsletter">
+              <Newsletter />
+            </section>
+          )}
+        </div>
       </div>
-    </div>
+    </main>
   );
 }

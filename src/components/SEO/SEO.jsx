@@ -1,45 +1,81 @@
 import { Helmet } from "react-helmet-async";
 
+const SITE_URL = "https://shahdanstore.com";
+const STORE_NAME = "شهدان ستور";
+const BRAND_NAME = "شهدان";
+
+function stripHtml(value = "") {
+  return value
+    .replace(/<[^>]*>/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export default function SEO({ product }) {
   if (!product) return null;
 
-  // ضع دومين شهدان النهائي هنا عند اعتماده
-  const SITE_URL = "https://shahdan-store.com";
+  const title =
+    product.seoTitle?.trim() ||
+    `${product.name} | ${STORE_NAME}`;
 
-  const title = product.seoTitle || `${product.name} | شهدان ستور`;
-
-  const plainDescription = product.description
-    ?.replace(/<[^>]*>/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
+  const plainDescription = stripHtml(product.description || "");
 
   const description =
-    product.seoDescription ||
-    plainDescription?.slice(0, 300) ||
-    `اشترِ ${product.name} من شهدان ستور.`;
+    product.seoDescription?.trim() ||
+    plainDescription.slice(0, 300) ||
+    `اشترِ ${product.name} من ${STORE_NAME}.`;
 
   const slug = product.seoSlug || product.slug;
 
   const url = `${SITE_URL}/product/${slug}`;
 
-  const image = product.images?.[0] || `${SITE_URL}/logo.png`;
+  const images =
+    Array.isArray(product.images) && product.images.length > 0
+      ? product.images.filter(Boolean)
+      : [`${SITE_URL}/logo.png`];
+
+  const image = images[0];
+
+  const price = Number(product.price || 0);
+
+  const stock = Number(product.stock || 0);
+
+  const category = product.category || product.categories?.[0] || "";
 
   const schema = {
     "@context": "https://schema.org",
+
     "@graph": [
+      // =========================
+      // Organization
+      // =========================
       {
         "@type": "Organization",
         "@id": `${SITE_URL}/#organization`,
-        name: "شهدان ستور",
+
+        name: STORE_NAME,
+        alternateName: "SHAHDAN STORE",
+
         url: SITE_URL,
+
         logo: {
           "@type": "ImageObject",
           url: `${SITE_URL}/logo.png`,
+          width: 1024,
+          height: 1024,
         },
+
+        image: `${SITE_URL}/logo.png`,
       },
 
+      // =========================
+      // Breadcrumb
+      // =========================
       {
         "@type": "BreadcrumbList",
+
+        "@id": `${url}#breadcrumb`,
+
         itemListElement: [
           {
             "@type": "ListItem",
@@ -47,65 +83,86 @@ export default function SEO({ product }) {
             name: "الرئيسية",
             item: `${SITE_URL}/`,
           },
+
           {
             "@type": "ListItem",
             position: 2,
             name: "المنتجات",
             item: `${SITE_URL}/products`,
           },
+
+          ...(category
+            ? [
+                {
+                  "@type": "ListItem",
+                  position: 3,
+                  name: category,
+                  item: `${SITE_URL}/products?category=${encodeURIComponent(
+                    category,
+                  )}`,
+                },
+              ]
+            : []),
+
           {
             "@type": "ListItem",
-            position: 3,
-            name: product.category || "منتجات",
-            item: `${SITE_URL}/products?category=${encodeURIComponent(
-              product.category || "",
-            )}`,
-          },
-          {
-            "@type": "ListItem",
-            position: 4,
+            position: category ? 4 : 3,
             name: product.name,
             item: url,
           },
         ],
       },
 
+      // =========================
+      // Product
+      // =========================
       {
         "@type": "Product",
+
         "@id": url,
 
         name: product.name,
 
-        image: product.images?.length > 0 ? product.images : [image],
+        image: images,
 
         description,
 
         sku: product.id,
 
-        ...(product.category ? { category: product.category } : {}),
+        ...(category
+          ? {
+              category,
+            }
+          : {}),
 
         brand: {
           "@type": "Brand",
-          name: "شهدان",
+          name: BRAND_NAME,
         },
 
         offers: {
           "@type": "Offer",
+
+          "@id": `${url}#offer`,
+
           url,
+
           priceCurrency: "SAR",
-          price: Number(product.price || 0).toFixed(2),
-          priceValidUntil: "2027-12-31",
+
+          price: price.toFixed(2),
 
           availability:
-            Number(product.stock || 0) > 0
+            stock > 0
               ? "https://schema.org/InStock"
               : "https://schema.org/OutOfStock",
 
-          itemCondition: "https://schema.org/NewCondition",
+          itemCondition:
+            "https://schema.org/NewCondition",
 
           seller: {
             "@type": "Organization",
-            name: "شهدان ستور",
+            "@id": `${SITE_URL}/#organization`,
+            name: STORE_NAME,
           },
         },
       },
@@ -114,27 +171,113 @@ export default function SEO({ product }) {
 
   return (
     <Helmet>
+      {/* =========================
+          Basic SEO
+      ========================= */}
+
+      <html lang="ar" dir="rtl" />
+
       <title>{title}</title>
 
-      <meta name="description" content={description} />
+      <meta
+        name="description"
+        content={description}
+      />
 
-      <link rel="canonical" href={url} />
+      <meta
+        name="robots"
+        content="index, follow, max-image-preview:large"
+      />
 
-      {/* Open Graph */}
-      <meta property="og:type" content="product" />
-      <meta property="og:site_name" content="شهدان ستور" />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
-      <meta property="og:url" content={url} />
-      <meta property="og:image" content={image} />
+      <meta
+        name="author"
+        content={STORE_NAME}
+      />
 
-      {/* Twitter */}
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
-      <meta name="twitter:image" content={image} />
+      {/* Canonical */}
 
-      {/* Product Schema */}
+      <link
+        rel="canonical"
+        href={url}
+      />
+
+      {/* =========================
+          Open Graph
+      ========================= */}
+
+      <meta
+        property="og:type"
+        content="product"
+      />
+
+      <meta
+        property="og:site_name"
+        content={STORE_NAME}
+      />
+
+      <meta
+        property="og:locale"
+        content="ar_SA"
+      />
+
+      <meta
+        property="og:title"
+        content={title}
+      />
+
+      <meta
+        property="og:description"
+        content={description}
+      />
+
+      <meta
+        property="og:url"
+        content={url}
+      />
+
+      <meta
+        property="og:image"
+        content={image}
+      />
+
+      <meta
+        property="og:image:secure_url"
+        content={image}
+      />
+
+      <meta
+        property="og:image:type"
+        content="image/png"
+      />
+
+      {/* =========================
+          Twitter / X
+      ========================= */}
+
+      <meta
+        name="twitter:card"
+        content="summary_large_image"
+      />
+
+      <meta
+        name="twitter:title"
+        content={title}
+      />
+
+      <meta
+        name="twitter:description"
+        content={description}
+      />
+
+      <meta
+        name="twitter:image"
+        content={image}
+      />
+
+      {/* =========================
+          Product Schema
+      ========================= */}
+
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
