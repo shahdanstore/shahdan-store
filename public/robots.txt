@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /wishlist
+Disallow: /order-success
+Disallow: /order-confirmation/
+
+Sitemap: https://shahdanstore.com/sitemap.xml
