@@ -1,6 +1,6 @@
 import { adminDb } from "./firebaseAdmin.js";
 
-const SITE_URL = (process.env.SITE_URL || "https://shahdan-store.com").replace(
+const SITE_URL = (process.env.SITE_URL || "https://shahdanstore.com").replace(
   /\/$/,
   "",
 );

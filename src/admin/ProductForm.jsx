@@ -409,7 +409,7 @@ function ProductForm() {
                 />
 
                 <p className="mt-2 text-sm text-gray-500">
-                  الرابط النهائي: https://shahdan-store.com/product/
+                  الرابط النهائي: https://shahdanstore.com/product/
                   {form.seoSlug || "product-slug"}
                 </p>
               </div>
