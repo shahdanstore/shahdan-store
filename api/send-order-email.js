@@ -1,11 +1,11 @@
-
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-const SITE_URL = (
-  process.env.SITE_URL || "https://shahdan-store-sigma.vercel.app"
-).replace(/\/$/, "");
+const SITE_URL = (process.env.SITE_URL || "https://shahdanstore.com").replace(
+  /\/$/,
+  "",
+);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
