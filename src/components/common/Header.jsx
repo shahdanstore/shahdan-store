@@ -210,10 +210,6 @@ function Header() {
                 <h1 className="text-2xl font-bold tracking-tight text-[#171717] sm:text-3xl">
                   شهدان
                 </h1>
-
-                <span className="mt-1 text-[9px] font-semibold tracking-[0.28em] text-[#b08d57]">
-                  SHAHDAN STORE
-                </span>
               </div>
             </Link>
 
@@ -386,10 +382,6 @@ function Header() {
 
                   <div>
                     <p className="text-lg font-bold text-[#171717]">شهدان</p>
-
-                    <p className="text-[8px] font-semibold tracking-[0.24em] text-[#b08d57]">
-                      SHAHDAN STORE
-                    </p>
                   </div>
                 </Link>
 
