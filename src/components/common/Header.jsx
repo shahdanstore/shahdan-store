@@ -193,9 +193,7 @@ function Header() {
                   شهدان
                 </h1>
 
-                <span className="mt-1 text-[9px] font-semibold tracking-[0.28em] text-[#b08d57]">
-                  SHAHDAN STORE
-                </span>
+                
               </div>
             </Link>
 
@@ -363,9 +361,7 @@ function Header() {
                     شهدان
                   </span>
 
-                  <span className="mt-1 text-[8px] font-semibold tracking-[0.25em] text-[#b08d57]">
-                    SHAHDAN STORE
-                  </span>
+                 
                 </div>
               </Link>
 
