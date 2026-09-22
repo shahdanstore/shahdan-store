@@ -8,6 +8,12 @@ import {
   FaBars,
   FaTimes,
   FaChevronLeft,
+  FaHome,
+  FaBoxOpen,
+  FaThLarge,
+  FaClipboardList,
+  FaPhoneAlt,
+  FaArrowLeft,
 } from "react-icons/fa";
 
 import { useCart } from "../../hooks/useCart";
@@ -28,7 +34,6 @@ function Header() {
 
   const [searchInput, setSearchInput] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [cartAnimating, setCartAnimating] = useState(false);
   const [cartPopup, setCartPopup] = useState(null);
   const [currentMessage, setCurrentMessage] = useState(0);
@@ -50,16 +55,6 @@ function Header() {
 
     return () => clearInterval(timer);
   }, [messages.length, interval]);
-
-  useEffect(() => {
-    if (menuOpen) {
-      const timer = setTimeout(() => {
-        setDrawerVisible(true);
-      }, 10);
-
-      return () => clearTimeout(timer);
-    }
-  }, [menuOpen]);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -96,11 +91,7 @@ function Header() {
   }, []);
 
   const closeMenu = () => {
-    setDrawerVisible(false);
-
-    setTimeout(() => {
-      setMenuOpen(false);
-    }, 300);
+    setMenuOpen(false);
   };
 
   const handleSearchSubmit = (e) => {
@@ -120,6 +111,34 @@ function Header() {
 
     closeMenu();
   };
+
+  const mobileLinks = [
+    {
+      to: "/",
+      label: "الرئيسية",
+      icon: FaHome,
+    },
+    {
+      to: "/products",
+      label: "كل المنتجات",
+      icon: FaBoxOpen,
+    },
+    {
+      to: "/categories",
+      label: "التصنيفات",
+      icon: FaThLarge,
+    },
+    {
+      to: "/track-order",
+      label: "متابعة الطلب",
+      icon: FaClipboardList,
+    },
+    {
+      to: "/about",
+      label: "تواصل معنا",
+      icon: FaPhoneAlt,
+    },
+  ];
 
   return (
     <>
@@ -168,9 +187,8 @@ function Header() {
               type="button"
               onClick={() => {
                 setMenuOpen(true);
-                setDrawerVisible(false);
               }}
-              className="text-2xl text-[#242424] transition hover:text-[#b08d57] md:hidden"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#e8e1d7] bg-white text-xl text-[#242424] shadow-sm transition-all duration-300 hover:border-[#b08d57] hover:text-[#b08d57] active:scale-90 md:hidden"
               aria-label="فتح القائمة"
             >
               <FaBars />
@@ -193,7 +211,9 @@ function Header() {
                   شهدان
                 </h1>
 
-                
+                <span className="mt-1 text-[9px] font-semibold tracking-[0.28em] text-[#b08d57]">
+                  SHAHDAN STORE
+                </span>
               </div>
             </Link>
 
@@ -258,7 +278,6 @@ function Header() {
                 Icons
                 ========================================= */}
             <div className="flex items-center gap-2 text-xl sm:gap-3">
-              {/* Track order */}
               <Link
                 to="/track-order"
                 title="متابعة الطلب"
@@ -268,7 +287,6 @@ function Header() {
                 <FaUser />
               </Link>
 
-              {/* Wishlist */}
               <Link
                 to="/wishlist"
                 title="المفضلة"
@@ -284,7 +302,6 @@ function Header() {
                 )}
               </Link>
 
-              {/* Cart */}
               <Link
                 to="/cart"
                 title="السلة"
@@ -321,201 +338,299 @@ function Header() {
       </header>
 
       {/* =========================================
-          Mobile Drawer
+          New Mobile Menu
           ========================================= */}
-      {menuOpen && (
-        <div className="fixed inset-0 z-[2147483647] md:hidden">
-          {/* Overlay */}
-          <div
-            onClick={closeMenu}
-            className={`absolute inset-0 backdrop-blur-sm transition-all duration-300 ${
-              drawerVisible ? "bg-black/50 opacity-100" : "bg-black/0 opacity-0"
-            }`}
-          />
+      <AnimatePresence>
+        {menuOpen && (
+          <div className="fixed inset-0 z-[2147483647] md:hidden">
+            {/* Background */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              onClick={closeMenu}
+              className="absolute inset-0 bg-[#171717]/70 backdrop-blur-md"
+            />
 
-          {/* Drawer */}
-          <div
-            className={`absolute right-0 top-0 z-[2147483647] flex h-full w-80 max-w-[85%] flex-col overflow-y-auto rounded-l-3xl bg-[#faf8f3] shadow-2xl transition-all duration-300 ease-out ${
-              drawerVisible
-                ? "translate-x-0 opacity-100"
-                : "translate-x-full opacity-0"
-            }`}
-          >
-            <div className="flex items-center justify-between border-b border-[#e8e1d7] bg-[#faf8f3] px-5 py-4">
-              {/* الشعار */}
-              <Link
-                to="/"
-                onClick={closeMenu}
-                className="group flex items-center gap-3"
-              >
-                <div className="h-11 w-11 overflow-hidden rounded-full border border-[#d4b477]/40 bg-white shadow-sm transition-transform duration-300 group-hover:scale-105">
-                  <img
-                    src="/logo.png"
-                    alt="شهدان ستور"
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-
-                <div className="flex flex-col leading-none">
-                  <span className="text-xl font-bold tracking-tight text-[#171717]">
-                    شهدان
-                  </span>
-
-                 
-                </div>
-              </Link>
-
-              {/* زر الإغلاق */}
-              <button
-                type="button"
-                onClick={closeMenu}
-                className="flex h-10 w-10 items-center justify-center rounded-xl text-xl text-[#242424] transition hover:bg-[#f3eadc] hover:text-[#b08d57]"
-                aria-label="إغلاق القائمة"
-              >
-                <FaTimes />
-              </button>
-            </div>
-
-            {/* Mobile Search */}
-            <form
-              onSubmit={handleSearchSubmit}
-              className="flex items-center gap-2 border-b border-[#e8e1d7] p-5"
+            {/* Main Menu */}
+            <motion.div
+              initial={{ opacity: 0, y: "100%" }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: "100%" }}
+              transition={{
+                duration: 0.4,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="absolute inset-x-0 bottom-0 flex max-h-[94vh] flex-col overflow-hidden rounded-t-[32px] bg-[#faf8f3] shadow-2xl"
             >
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="ابحث عن منتج..."
-                className="flex-1 rounded-xl border border-[#e8e1d7] bg-white p-3 text-sm outline-none transition focus:border-[#b08d57]"
-              />
+              {/* Top Handle */}
+              <div className="flex justify-center pt-3">
+                <span className="h-1 w-12 rounded-full bg-[#d8d0c4]" />
+              </div>
 
-              <button
-                type="submit"
-                className="rounded-xl bg-[#171717] p-3 text-[#d4b477] transition hover:bg-[#b08d57] hover:text-white"
-                aria-label="بحث"
-              >
-                <FaSearch />
-              </button>
-            </form>
+              {/* Menu Header */}
+              <div className="flex items-center justify-between px-5 pb-4 pt-3">
+                <Link
+                  to="/"
+                  onClick={closeMenu}
+                  className="flex items-center gap-3"
+                >
+                  <div className="h-12 w-12 overflow-hidden rounded-2xl border border-[#d4b477]/40 bg-white shadow-sm">
+                    <img
+                      src="/logo.png"
+                      alt="شهدان ستور"
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
 
-            {/* Mobile Navigation */}
-            <nav className="flex flex-col border-b border-[#e8e1d7] p-3">
-              <Link
-                to="/"
-                onClick={closeMenu}
-                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
-                  location.pathname === "/"
-                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
-                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
-                }`}
-              >
-                الرئيسية
-              </Link>
+                  <div>
+                    <p className="text-lg font-bold text-[#171717]">شهدان</p>
 
-              <Link
-                to="/products"
-                onClick={closeMenu}
-                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
-                  location.pathname === "/products"
-                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
-                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
-                }`}
-              >
-                كل المنتجات
-              </Link>
+                    <p className="text-[8px] font-semibold tracking-[0.24em] text-[#b08d57]">
+                      SHAHDAN STORE
+                    </p>
+                  </div>
+                </Link>
 
-              <Link
-                to="/categories"
-                onClick={closeMenu}
-                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
-                  location.pathname === "/categories"
-                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
-                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
-                }`}
-              >
-                التصنيفات
-              </Link>
+                <button
+                  type="button"
+                  onClick={closeMenu}
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-lg text-[#242424] shadow-sm transition-all duration-300 hover:text-[#b08d57] active:scale-90"
+                  aria-label="إغلاق القائمة"
+                >
+                  <FaTimes />
+                </button>
+              </div>
 
-              <Link
-                to="/wishlist"
-                onClick={closeMenu}
-                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
-                  location.pathname === "/wishlist"
-                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
-                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
-                }`}
-              >
-                المفضلة
-              </Link>
+              {/* Scrollable Content */}
+              <div className="overflow-y-auto px-5 pb-8">
+                {/* Welcome */}
+                <div className="mb-5 rounded-[24px] bg-[#171717] p-5 text-white shadow-lg">
+                  <p className="mb-1 text-xs font-medium text-[#d4b477]">
+                    أهلاً بك في
+                  </p>
 
-              <Link
-                to="/track-order"
-                onClick={closeMenu}
-                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
-                  location.pathname === "/track-order"
-                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
-                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
-                }`}
-              >
-                متابعة الطلب
-              </Link>
+                  <h2 className="text-xl font-bold">عالم شهدان</h2>
 
-              <Link
-                to="/about"
-                onClick={closeMenu}
-                className={`rounded-2xl px-4 py-3 transition-all duration-300 active:scale-95 ${
-                  location.pathname === "/about"
-                    ? "bg-[#f3eadc] font-semibold text-[#b08d57] shadow-sm"
-                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
-                }`}
-              >
-                تواصل معنا
-              </Link>
-            </nav>
+                  <p className="mt-2 text-xs leading-6 text-white/65">
+                    اكتشف منتجاتنا واختر ما يناسبك بسهولة.
+                  </p>
+                </div>
 
-            {/* Categories */}
-            {categories.length > 0 && (
-              <div className="p-3">
-                <p className="px-3 py-2 text-sm font-semibold text-[#b08d57]">
-                  التصنيفات
-                </p>
+                {/* Search */}
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="mb-6 flex items-center gap-2 rounded-[20px] border border-[#e8e1d7] bg-white p-2 shadow-sm"
+                >
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#f3eadc] text-[#b08d57]">
+                    <FaSearch />
+                  </div>
 
-                {categories.map((cat) => (
+                  <input
+                    type="text"
+                    value={searchInput}
+                    onChange={(e) => setSearchInput(e.target.value)}
+                    placeholder="ابحث عن منتج..."
+                    className="min-w-0 flex-1 bg-transparent px-1 text-sm text-[#242424] outline-none placeholder:text-[#9a9a9a]"
+                  />
+
                   <button
-                    key={cat.id}
-                    type="button"
-                    onClick={() => handleCategoryClick(cat.name)}
-                    className="group flex w-full items-center gap-3 rounded-2xl px-3 py-3 text-right text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57]"
+                    type="submit"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[#171717] text-[#d4b477] transition hover:bg-[#b08d57] hover:text-white active:scale-90"
+                    aria-label="بحث"
                   >
-                    {/* صورة التصنيف */}
-                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-[#e8e1d7] bg-white shadow-sm">
-                      {cat.image ? (
-                        <img
-                          src={cat.image}
-                          alt={cat.name}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
-                        />
-                      ) : (
-                        <div className="flex h-full w-full items-center justify-center text-xs text-[#b08d57]">
-                          صورة
+                    <FaArrowLeft />
+                  </button>
+                </form>
+
+                {/* Main Links */}
+                <section className="mb-6">
+                  <div className="mb-3 flex items-center justify-between px-1">
+                    <h3 className="text-sm font-bold text-[#171717]">
+                      استكشف المتجر
+                    </h3>
+
+                    <span className="text-[10px] font-medium text-[#a39a8e]">
+                      القائمة الرئيسية
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {mobileLinks.map((item, index) => {
+                      const Icon = item.icon;
+
+                      const active =
+                        item.to === "/"
+                          ? location.pathname === "/"
+                          : location.pathname.startsWith(item.to);
+
+                      return (
+                        <motion.div
+                          key={item.to}
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: 0.05 + index * 0.05,
+                            duration: 0.3,
+                          }}
+                        >
+                          <Link
+                            to={item.to}
+                            onClick={closeMenu}
+                            className={`group flex min-h-[86px] flex-col justify-between rounded-[22px] border p-4 transition-all duration-300 active:scale-[0.97] ${
+                              active
+                                ? "border-[#b08d57] bg-[#171717] text-white shadow-lg"
+                                : "border-[#e8e1d7] bg-white text-[#242424] hover:border-[#d4b477] hover:shadow-md"
+                            }`}
+                          >
+                            <div className="flex items-start justify-between">
+                              <span
+                                className={`flex h-9 w-9 items-center justify-center rounded-xl ${
+                                  active
+                                    ? "bg-[#b08d57] text-white"
+                                    : "bg-[#f3eadc] text-[#b08d57]"
+                                }`}
+                              >
+                                <Icon className="text-sm" />
+                              </span>
+
+                              <FaChevronLeft
+                                className={`mt-1 text-[10px] transition-transform duration-300 group-hover:-translate-x-1 ${
+                                  active ? "text-[#d4b477]" : "text-[#b08d57]"
+                                }`}
+                              />
+                            </div>
+
+                            <span className="text-sm font-bold">
+                              {item.label}
+                            </span>
+                          </Link>
+                        </motion.div>
+                      );
+                    })}
+
+                    {/* Wishlist */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3, duration: 0.3 }}
+                    >
+                      <Link
+                        to="/wishlist"
+                        onClick={closeMenu}
+                        className={`group relative flex min-h-[86px] flex-col justify-between rounded-[22px] border p-4 transition-all duration-300 active:scale-[0.97] ${
+                          location.pathname.startsWith("/wishlist")
+                            ? "border-[#b08d57] bg-[#171717] text-white shadow-lg"
+                            : "border-[#e8e1d7] bg-white text-[#242424] hover:border-[#d4b477] hover:shadow-md"
+                        }`}
+                      >
+                        <div className="flex items-start justify-between">
+                          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f3eadc] text-[#b08d57]">
+                            <FaHeart className="text-sm" />
+                          </span>
+
+                          {wishlistCount > 0 && (
+                            <span className="flex min-h-[22px] min-w-[22px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[10px] font-bold text-white">
+                              {wishlistCount}
+                            </span>
+                          )}
                         </div>
-                      )}
+
+                        <span className="text-sm font-bold">المفضلة</span>
+                      </Link>
+                    </motion.div>
+                  </div>
+                </section>
+
+                {/* Cart Shortcut */}
+                <Link
+                  to="/cart"
+                  onClick={closeMenu}
+                  className="mb-6 flex items-center justify-between rounded-[24px] bg-[#b08d57] p-4 text-white shadow-md transition-all duration-300 hover:bg-[#171717] active:scale-[0.98]"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/15">
+                      <FaShoppingCart />
                     </div>
 
-                    {/* اسم التصنيف */}
-                    <span className="flex-1 text-sm font-medium">
-                      {cat.name}
-                    </span>
+                    <div>
+                      <p className="text-sm font-bold">سلة التسوق</p>
 
-                    <FaChevronLeft className="text-xs text-[#b08d57] transition-transform duration-300 group-hover:-translate-x-1" />
-                  </button>
-                ))}
+                      <p className="mt-1 text-[11px] text-white/70">
+                        {cartCount > 0
+                          ? `${cartCount} منتج في السلة`
+                          : "السلة فارغة حاليًا"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <FaChevronLeft className="text-xs" />
+                </Link>
+
+                {/* Categories */}
+                {categories.length > 0 && (
+                  <section>
+                    <div className="mb-3 flex items-center justify-between px-1">
+                      <h3 className="text-sm font-bold text-[#171717]">
+                        تصفح حسب التصنيف
+                      </h3>
+
+                      <Link
+                        to="/categories"
+                        onClick={closeMenu}
+                        className="text-[11px] font-semibold text-[#b08d57]"
+                      >
+                        عرض الكل
+                      </Link>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3">
+                      {categories.map((cat, index) => (
+                        <motion.button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => handleCategoryClick(cat.name)}
+                          initial={{ opacity: 0, scale: 0.96 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{
+                            delay: 0.05 + index * 0.04,
+                            duration: 0.3,
+                          }}
+                          className="group relative min-h-[130px] overflow-hidden rounded-[22px] border border-[#e8e1d7] bg-white text-right shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.97]"
+                        >
+                          {cat.image ? (
+                            <img
+                              src={cat.image}
+                              alt={cat.name}
+                              loading="lazy"
+                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-[#f3eadc]" />
+                          )}
+
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+
+                          <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3 text-white">
+                            <span className="text-sm font-bold drop-shadow-sm">
+                              {cat.name}
+                            </span>
+
+                            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                              <FaChevronLeft className="text-[9px]" />
+                            </span>
+                          </div>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
-            )}
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
 
       {/* Space for fixed header */}
       <div
