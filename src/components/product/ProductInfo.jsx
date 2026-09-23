@@ -17,82 +17,88 @@ function ProductInfo({ product }) {
   const savings = oldPrice > price ? oldPrice - price : 0;
 
   return (
-    <div>
+    <div dir="rtl">
       {/* Discount Banner */}
       {discount > 0 && (
-        <div className="mb-5">
-          <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-red-500 to-orange-500 px-5 py-2 text-sm font-bold text-white shadow-lg">
-            🔥 عرض لفترة محدودة • وفر {savings} ر.س
+        <div className="mb-6">
+          <div className="inline-flex items-center gap-2 rounded-2xl border border-[#e7c7d8] bg-gradient-to-r from-[#8e6b8e] to-[#a77fa0] px-5 py-3 text-sm font-bold text-white shadow-[0_8px_25px_rgba(142,107,142,0.18)]">
+            <span className="text-base">🔥</span>
+            <span>عرض لفترة محدودة</span>
+            <span className="h-4 w-px bg-white/30" />
+            <span>وفر {savings} ر.س</span>
           </div>
         </div>
       )}
 
-      {/* Category */}
+      {/* Category & Discount */}
       <div className="mb-5 flex flex-wrap items-center gap-3">
         {product.category && (
-          <span className="rounded-full bg-green-100 px-4 py-2 text-sm font-semibold text-green-700">
+          <span className="rounded-full border border-[#eadfca] bg-[#f9f6ee] px-4 py-2 text-sm font-bold text-[#8a642f]">
             ⚡ {product.category}
           </span>
         )}
 
         {discount > 0 && (
-          <span className="rounded-full bg-red-100 px-4 py-2 text-sm font-bold text-red-600">
+          <span className="rounded-full bg-[#f4e5ef] px-4 py-2 text-sm font-black text-[#8e6b8e]">
             خصم {discount}%
           </span>
         )}
       </div>
 
-      {/* Name */}
-      <h1 className="text-3xl font-bold leading-relaxed text-gray-800 lg:text-5xl">
+      {/* Product Name */}
+      <h1 className="text-3xl font-black leading-relaxed text-[#4a2e1b] lg:text-5xl">
         {product.name}
       </h1>
 
       {/* Rating */}
-      <div className="mt-5 flex items-center gap-3">
-        <div className="flex items-center gap-1 rounded-xl bg-yellow-50 px-4 py-2">
-          <FaStar className="text-yellow-400" />
+      <div className="mt-5 flex flex-wrap items-center gap-3">
+        <div className="flex items-center gap-2 rounded-2xl border border-[#eadfca] bg-[#fffaf0] px-4 py-2">
+          <FaStar className="text-[#d49b35]" />
 
-          <span className="font-bold">
+          <span className="font-black text-[#4a2e1b]">
             {reviews.length > 0 ? averageRating : "منتج جديد"}
           </span>
         </div>
 
-        <span className="text-gray-500">({reviews.length} تقييم)</span>
+        <span className="text-sm text-[#8b8175]">({reviews.length} تقييم)</span>
       </div>
 
       {/* Price */}
-      <div className="mt-8 rounded-3xl bg-green-50 p-6">
+      <div className="mt-8 rounded-[28px] border border-[#eadfca] bg-gradient-to-br from-[#f9f6ee] to-white p-6 shadow-[0_8px_30px_rgba(74,46,27,0.05)]">
         <div className="flex flex-wrap items-center gap-4">
-          <span className="text-4xl font-bold text-green-600">{price} ر.س</span>
+          <span className="text-4xl font-black text-[#d49b35]">
+            {price} ر.س
+          </span>
 
           {oldPrice > price && (
-            <span className="text-2xl text-gray-400 line-through">
+            <span className="text-2xl font-medium text-[#a79e91] line-through">
               {oldPrice} ر.س
             </span>
           )}
         </div>
 
         {discount > 0 && (
-          <div className="mt-4 inline-flex rounded-full bg-red-50 px-4 py-2 text-sm font-bold text-red-600">
-            🔥 وفر {savings} ر.س عند الشراء الآن
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#f4e5ef] px-4 py-2 text-sm font-bold text-[#8e6b8e]">
+            <span>🔥</span>
+            <span>وفر {savings} ر.س عند الشراء الآن</span>
           </div>
         )}
       </div>
 
       {/* Stock */}
-      <div className="mt-8">
+      <div className="mt-7">
         {stock > 0 ? (
-          <div className="inline-flex items-center gap-3 rounded-2xl bg-green-100 px-5 py-3 text-green-700">
+          <div className="inline-flex flex-wrap items-center gap-3 rounded-2xl border border-[#d9e2c5] bg-[#f1f5e8] px-5 py-3 text-[#657536]">
             <FaCheckCircle />
 
-            <span className="font-bold">متوفر بالمخزون</span>
+            <span className="font-black">متوفر بالمخزون</span>
 
-            <span className="rounded-full bg-white px-3 py-1 text-sm">
+            <span className="rounded-full bg-white px-3 py-1 text-sm font-semibold shadow-sm">
               {stock} قطعة
             </span>
           </div>
         ) : (
-          <div className="inline-flex items-center rounded-2xl bg-red-100 px-5 py-3 font-bold text-red-600">
+          <div className="inline-flex items-center rounded-2xl bg-[#fcebea] px-5 py-3 font-bold text-[#c74b45]">
             غير متوفر حالياً
           </div>
         )}
@@ -100,11 +106,11 @@ function ProductInfo({ product }) {
 
       {/* Description */}
       {product.description && (
-        <div className="mt-10 border-t pt-8">
-          <h3 className="mb-4 text-xl font-bold text-gray-800">وصف المنتج</h3>
+        <div className="mt-10 border-t border-[#eadfca] pt-8">
+          <h3 className="mb-4 text-xl font-black text-[#4a2e1b]">وصف المنتج</h3>
 
           <div
-            className="product-description leading-9 text-gray-600"
+            className="product-description leading-9 text-[#6f6559]"
             dangerouslySetInnerHTML={{
               __html: product.description,
             }}

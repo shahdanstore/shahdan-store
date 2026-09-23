@@ -135,7 +135,7 @@ function Header() {
     },
     {
       to: "/about",
-      label: "تواصل معنا",
+      label: "من نحن",
       icon: FaPhoneAlt,
     },
   ];
@@ -193,7 +193,6 @@ function Header() {
             >
               <FaBars />
             </button>
-
             {/* =========================================
                 Logo
                 ========================================= */}
@@ -212,64 +211,53 @@ function Header() {
                 </h1>
               </div>
             </Link>
-
-            {/* =========================================
-                Desktop Navigation
-                ========================================= */}
-            <nav className="hidden gap-8 font-medium md:flex">
+            {/* ========================================= Desktop Navigation - New Style ========================================= */}{" "}
+            <nav className="hidden md:flex items-center rounded-full border border-[#e8e1d7] bg-white/90 p-1.5 shadow-[0_6px_24px_rgba(74,46,27,0.06)] backdrop-blur-md">
+              {" "}
               <Link
                 to="/"
-                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
+                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname === "/" ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
               >
-                الرئيسية
-              </Link>
-
+                {" "}
+                <FaHome
+                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname === "/" ? "text-[#d4b477]" : "text-[#b08d57]"}`}
+                />{" "}
+                <span>الرئيسية</span>{" "}
+              </Link>{" "}
               <Link
                 to="/products"
-                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
+                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname.startsWith("/products") ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
               >
-                كل المنتجات
-              </Link>
-
+                {" "}
+                <FaBoxOpen
+                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname.startsWith("/products") ? "text-[#d4b477]" : "text-[#b08d57]"}`}
+                />{" "}
+                <span>المنتجات</span>{" "}
+              </Link>{" "}
               <Link
                 to="/categories"
-                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
+                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname.startsWith("/categories") ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
               >
-                التصنيفات
-              </Link>
-
+                {" "}
+                <FaThLarge
+                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname.startsWith("/categories") ? "text-[#d4b477]" : "text-[#b08d57]"}`}
+                />{" "}
+                <span>التصنيفات</span>{" "}
+              </Link>{" "}
               <Link
                 to="/about"
-                className="relative py-2 text-[#242424] transition hover:text-[#b08d57]"
+                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname.startsWith("/about") ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
               >
-                تواصل معنا
-              </Link>
+                {" "}
+                <FaPhoneAlt
+                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname.startsWith("/about") ? "text-[#d4b477]" : "text-[#b08d57]"}`}
+                />{" "}
+                <span>من نحن</span>{" "}
+              </Link>{" "}
             </nav>
-
             {/* =========================================
                 Desktop Search
                 ========================================= */}
-            <form
-              onSubmit={handleSearchSubmit}
-              className="hidden items-center overflow-hidden rounded-full border border-[#e8e1d7] bg-white lg:flex"
-            >
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="ابحث عن منتج..."
-                className="w-64 bg-transparent px-4 py-2 text-sm text-[#242424] outline-none placeholder:text-[#9a9a9a]"
-              />
-
-              <button
-                type="submit"
-                className="bg-[#171717] px-4 py-3 text-[#d4b477] transition hover:bg-[#b08d57] hover:text-white"
-                aria-label="بحث"
-              >
-                <FaSearch />
-              </button>
-            </form>
-
             {/* =========================================
                 Icons
                 ========================================= */}
@@ -302,31 +290,66 @@ function Header() {
                 to="/cart"
                 title="السلة"
                 aria-label="السلة"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90"
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90 ${cartAnimating ? "scale-125 bg-[#f3eadc] text-[#b08d57]" : ""}`}
               >
-                {cartPopup && (
-                  <span className="pointer-events-none absolute -top-7 right-0 z-50 animate-[cartFly_1s_ease] rounded-full bg-[#b08d57] px-2 py-1 text-xs font-bold text-white">
-                    +{cartPopup}
-                  </span>
-                )}
-
-                <FaShoppingCart
-                  className={`transition-all duration-500 ${
+                {" "}
+                {/* Added Quantity */}{" "}
+                <AnimatePresence>
+                  {" "}
+                  {cartPopup && (
+                    <motion.span
+                      initial={{ opacity: 0, y: 8, scale: 0.5 }}
+                      animate={{ opacity: 1, y: -4, scale: 1 }}
+                      exit={{ opacity: 0, y: -18, scale: 0.7 }}
+                      transition={{ duration: 0.35 }}
+                      className="pointer-events-none absolute -top-7 right-0 z-50 rounded-full bg-[#d49b35] px-2 py-1 text-[11px] font-black text-white shadow-lg"
+                    >
+                      {" "}
+                      +{cartPopup}{" "}
+                    </motion.span>
+                  )}{" "}
+                </AnimatePresence>{" "}
+                {/* Cart Icon */}{" "}
+                <motion.span
+                  animate={
                     cartAnimating
-                      ? "animate-[cartShake_800ms_cubic-bezier(.22,1,.36,1)]"
-                      : ""
-                  }`}
-                />
-
+                      ? {
+                          rotate: [0, -12, 12, -8, 8, 0],
+                          scale: [1, 1.2, 1.15, 1.2, 1],
+                        }
+                      : { rotate: 0, scale: 1 }
+                  }
+                  transition={{ duration: 0.65, ease: "easeInOut" }}
+                >
+                  {" "}
+                  <FaShoppingCart />{" "}
+                </motion.span>{" "}
+                {/* Cart Count */}{" "}
                 {cartCount > 0 && (
-                  <span
-                    className={`absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[11px] font-bold text-white shadow-md ${
-                      cartAnimating ? "animate-[cartBadge_600ms_ease]" : ""
-                    }`}
+                  <motion.span
+                    key={cartCount}
+                    initial={{ scale: 0.5 }}
+                    animate={{ scale: cartAnimating ? [1, 1.35, 1] : 1 }}
+                    transition={{ duration: 0.45 }}
+                    className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#d49b35] px-1 text-[11px] font-black text-white shadow-md"
                   >
-                    {cartCount}
-                  </span>
-                )}
+                    {" "}
+                    {cartCount}{" "}
+                  </motion.span>
+                )}{" "}
+                {/* Glow */}{" "}
+                <AnimatePresence>
+                  {" "}
+                  {cartAnimating && (
+                    <motion.span
+                      initial={{ opacity: 0, scale: 0.5 }}
+                      animate={{ opacity: 0.45, scale: 1.8 }}
+                      exit={{ opacity: 0, scale: 2.2 }}
+                      transition={{ duration: 0.6 }}
+                      className="pointer-events-none absolute inset-0 rounded-full bg-[#d49b35]/30"
+                    />
+                  )}{" "}
+                </AnimatePresence>{" "}
               </Link>
             </div>
           </div>

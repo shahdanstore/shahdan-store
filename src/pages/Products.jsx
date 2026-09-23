@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   FaStar,
@@ -7,10 +7,11 @@ import {
   FaCheck,
   FaHeart,
   FaTimes,
-  FaSlidersH,
   FaChevronDown,
   FaFire,
-  FaTags,
+  FaArrowLeft,
+  FaBoxOpen,
+  FaSlidersH,
 } from "react-icons/fa";
 
 import { useStore } from "../hooks/useStore";
@@ -28,6 +29,7 @@ export default function Products() {
   const activeCategory = searchParams.get("category") || "";
   const search = searchParams.get("search") || "";
   const sort = searchParams.get("sort") || "default";
+  const productsSectionRef = useRef(null);
 
   const handleSearchChange = (value) => {
     setSearchParams((prev) => {
@@ -62,7 +64,6 @@ export default function Products() {
     e.stopPropagation();
 
     addToCart(product, 1);
-
     setAddedId(product.id);
 
     setTimeout(() => {
@@ -145,18 +146,32 @@ export default function Products() {
     });
   }, [products, activeCategory, search, sort]);
 
-  const handleCategoryClick = (categoryName) => {
+  const handleCategoryClick = (category) => {
     setSearchParams((prev) => {
-      const next = new URLSearchParams(prev);
+      const params = new URLSearchParams(prev);
 
-      if (!categoryName || categoryName === activeCategory) {
-        next.delete("category");
+      if (category) {
+        params.set("category", category);
       } else {
-        next.set("category", categoryName);
+        params.delete("category");
       }
 
-      return next;
+      return params;
     });
+
+    setTimeout(() => {
+      const element = productsSectionRef.current;
+
+      if (!element) return;
+
+      const offset = 200;
+      const position = element.getBoundingClientRect().top + window.scrollY;
+
+      window.scrollTo({
+        top: position - offset,
+        behavior: "smooth",
+      });
+    }, 100);
   };
 
   const clearFilters = () => {
@@ -166,91 +181,69 @@ export default function Products() {
   const hasFilters = search || activeCategory || sort !== "default";
 
   return (
-    <section className="min-h-screen bg-[#f8f3e8] py-8 md:py-14">
+    <section dir="rtl" className="min-h-screen bg-[#f9f6ee] py-8 md:py-14">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         {/* =========================================================
             PAGE HEADER
         ========================================================== */}
-        <div className="mb-8 text-center md:mb-10">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#eadfca] bg-white px-4 py-2 text-xs font-semibold text-[#8a642f] shadow-sm">
-            <FaTags className="text-[#b88a44]" />
-            اكتشف تشكيلتنا
-          </div>
-
-          <h1 className="text-3xl font-black tracking-tight text-[#30291f] md:text-5xl">
-            كل المنتجات
-            <span className="mr-2 text-[#b88a44]">⚡</span>
-          </h1>
-
-          <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-[#8a8175] md:text-base">
-            اختر ما يناسبك من منتجات شهدان المختارة بعناية، واستمتع بتجربة تسوق
-            سهلة ومميزة.
-          </p>
-        </div>
 
         {/* =========================================================
-            CATEGORY CIRCLES
-        ========================================================== */}
+    CATEGORIES - COMPACT IMAGE CARDS
+========================================================== */}
         {categories.length > 0 && (
-          <div className="mb-8 md:mb-10">
+          <section className="mb-8">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-bold text-[#30291f] md:text-xl">
-                  تصفح حسب التصنيف
-                </h2>
-
-                <p className="mt-1 text-xs text-[#8a8175] md:text-sm">
-                  اختر التصنيف للوصول إلى المنتجات المناسبة
+                <p className="text-[10px] font-black tracking-[0.18em] text-[#d49b35]">
+                  CATEGORIES
                 </p>
+                <h2 className="mt-1 text-lg font-black text-[#4a2e1b] sm:text-xl">
+                  تصفح التصنيفات
+                </h2>
               </div>
 
-              <FaFire className="text-xl text-[#b88a44]" />
+              {activeCategory && (
+                <button
+                  type="button"
+                  onClick={() => handleCategoryClick("")}
+                  className="rounded-full border border-[#eadfca] bg-white px-3 py-1.5 text-[10px] font-bold text-[#8a642f] transition hover:border-[#d49b35] hover:bg-[#f9f6ee]"
+                >
+                  الكل
+                </button>
+              )}
             </div>
 
-            <div className="flex gap-4 overflow-x-auto pb-3 pt-1 scrollbar-hide md:flex-wrap md:justify-center md:overflow-visible">
-              {/* ALL */}
+            <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7">
+              {/* ALL PRODUCTS */}
               <button
                 type="button"
                 onClick={() => handleCategoryClick("")}
-                className="group flex min-w-[78px] flex-shrink-0 flex-col items-center gap-2"
+                className={`group relative aspect-[0.9] overflow-hidden rounded-2xl transition-all duration-300 ${
+                  !activeCategory
+                    ? "ring-2 ring-[#d49b35] ring-offset-2"
+                    : "hover:-translate-y-1"
+                }`}
               >
-                <div
-                  className={`relative flex h-[68px] w-[68px] items-center justify-center rounded-full border-2 transition-all duration-300 md:h-[82px] md:w-[82px] ${
-                    !activeCategory
-                      ? "border-[#b88a44] bg-[#f8f3e8] shadow-[0_8px_25px_rgba(184,138,68,0.25)]"
-                      : "border-[#eadfca] bg-white group-hover:border-[#b88a44] group-hover:shadow-md"
-                  }`}
-                >
-                  <div
-                    className={`flex h-[52px] w-[52px] items-center justify-center rounded-full transition md:h-[64px] md:w-[64px] ${
-                      !activeCategory
-                        ? "bg-gradient-to-br from-[#b88a44] to-[#8a642f] text-white"
-                        : "bg-[#f8f3e8] text-[#8a642f]"
-                    }`}
-                  >
-                    <FaTags className="text-xl md:text-2xl" />
-                  </div>
+                <div className="absolute inset-0 bg-[#4a2e1b]" />
 
-                  {!activeCategory && (
-                    <span className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2 border-white bg-[#b88a44]" />
-                  )}
+                <div className="absolute -right-5 -top-5 h-20 w-20 rounded-full border-[12px] border-[#d49b35]/30" />
+                <div className="absolute -bottom-6 -left-5 h-24 w-24 rounded-full border-[14px] border-[#8e6b8e]/30" />
+
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
+
+                <div className="absolute inset-x-0 bottom-0 p-3 text-right">
+                  <FaBoxOpen className="mb-2 text-sm text-[#d49b35]" />
+
+                  <h3 className="text-xs font-black text-white sm:text-sm">
+                    كل المنتجات
+                  </h3>
                 </div>
-
-                <span
-                  className={`text-xs font-bold transition md:text-sm ${
-                    !activeCategory
-                      ? "text-[#8a642f]"
-                      : "text-[#5f574c] group-hover:text-[#8a642f]"
-                  }`}
-                >
-                  الكل
-                </span>
               </button>
 
+              {/* CATEGORY CARDS */}
               {categories.map((cat) => {
                 const categoryImage =
                   cat.image || cat.imageUrl || cat.icon || "";
-
                 const isActive = activeCategory === cat.name;
 
                 return (
@@ -258,322 +251,341 @@ export default function Products() {
                     type="button"
                     key={cat.id}
                     onClick={() => handleCategoryClick(cat.name)}
-                    className="group flex min-w-[78px] flex-shrink-0 flex-col items-center gap-2"
+                    className={`group relative aspect-[0.9] overflow-hidden rounded-2xl text-right transition-all duration-300 ${
+                      isActive
+                        ? "ring-2 ring-[#d49b35] ring-offset-2"
+                        : "hover:-translate-y-1"
+                    }`}
                   >
-                    <div
-                      className={`relative rounded-full p-[3px] transition-all duration-300 ${
-                        isActive
-                          ? "bg-gradient-to-br from-[#c7a15a] via-[#b88a44] to-[#8a642f] shadow-[0_8px_25px_rgba(184,138,68,0.28)]"
-                          : "bg-[#eadfca] group-hover:bg-[#b88a44] group-hover:shadow-md"
-                      }`}
-                    >
-                      <div className="relative h-[62px] w-[62px] overflow-hidden rounded-full bg-[#f8f3e8] md:h-[76px] md:w-[76px]">
-                        {categoryImage ? (
-                          <img
-                            src={categoryImage}
-                            alt={cat.name}
-                            className="h-full w-full object-cover transition duration-500 group-hover:scale-110"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-[#f5ead5] to-[#eadfca] text-[#b88a44]">
-                            <FaTags className="text-xl md:text-2xl" />
-                          </div>
-                        )}
+                    {categoryImage ? (
+                      <img
+                        src={categoryImage}
+                        alt={cat.name}
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-[#eadfca]" />
+                    )}
 
-                        {isActive && (
-                          <div className="absolute inset-0 flex items-center justify-center bg-[#30291f]/25">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#8a642f] shadow-lg">
-                              <FaCheck className="text-xs" />
-                            </div>
-                          </div>
-                        )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#2b1a10]/85 via-transparent to-transparent" />
+
+                    {isActive && (
+                      <div className="absolute right-2 top-2 rounded-full bg-[#d49b35] px-2 py-1 text-[8px] font-black text-[#4a2e1b]">
+                        محدد
                       </div>
-                    </div>
+                    )}
 
-                    <span
-                      className={`max-w-[90px] truncate text-xs font-bold transition md:text-sm ${
-                        isActive
-                          ? "text-[#8a642f]"
-                          : "text-[#5f574c] group-hover:text-[#8a642f]"
-                      }`}
-                    >
-                      {cat.name}
-                    </span>
+                    <div className="absolute inset-x-0 bottom-0 p-3">
+                      <div className="mb-1 h-0.5 w-5 rounded-full bg-[#d49b35] transition-all duration-300 group-hover:w-9" />
+
+                      <h3 className="line-clamp-2 text-xs font-black text-white drop-shadow-md sm:text-sm">
+                        {cat.name}
+                      </h3>
+                    </div>
                   </button>
                 );
               })}
             </div>
-          </div>
+          </section>
         )}
 
         {/* =========================================================
-            SEARCH + SORT BAR
+            SEARCH + SORT
         ========================================================== */}
-        <div className="mb-8 rounded-[24px] border border-[#eadfca] bg-white p-3 shadow-[0_10px_35px_rgba(92,67,35,0.07)] md:mb-10 md:p-4">
-          <div className="flex flex-col gap-3 md:flex-row">
-            {/* SEARCH */}
-            <div className="relative flex-1">
-              <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-[#b88a44]" />
+        <div className="mb-7 grid gap-3 md:grid-cols-[1fr_220px]">
+          {/* SEARCH */}
+          <div className="relative rounded-[22px] border border-[#eadfca] bg-white p-2 shadow-[0_8px_30px_rgba(74,46,27,0.05)]">
+            <div className="relative">
+              <FaSearch className="absolute right-4 top-1/2 -translate-y-1/2 text-[#d49b35]" />
 
               <input
                 type="text"
                 value={search}
                 onChange={(e) => handleSearchChange(e.target.value)}
-                placeholder="ابحث عن منتج..."
-                className="w-full rounded-2xl border border-[#eadfca] bg-[#fdfbf7] py-3.5 pr-11 pl-11 text-sm text-[#30291f] outline-none transition placeholder:text-[#aaa093] focus:border-[#b88a44] focus:bg-white focus:ring-4 focus:ring-[#b88a44]/10"
+                placeholder="ابحث باسم المنتج أو المكونات..."
+                className="h-12 w-full rounded-2xl bg-[#f9f6ee] pr-11 pl-11 text-sm text-[#4a2e1b] outline-none transition focus:bg-white focus:ring-2 focus:ring-[#d49b35]/20"
               />
 
               {search && (
                 <button
                   type="button"
                   onClick={() => handleSearchChange("")}
-                  className="absolute left-4 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-[#f8f3e8] text-[#8a8175] transition hover:bg-[#eadfca] hover:text-[#30291f]"
+                  className="absolute left-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#8a8175] shadow-sm transition hover:text-[#4a2e1b]"
                   aria-label="مسح البحث"
                 >
                   <FaTimes className="text-xs" />
                 </button>
               )}
             </div>
-
-            {/* SORT */}
-            <div className="relative md:w-64">
-              <FaSlidersH className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#b88a44]" />
-
-              <select
-                value={sort}
-                onChange={(e) => handleSortChange(e.target.value)}
-                className="w-full appearance-none rounded-2xl border border-[#eadfca] bg-[#fdfbf7] py-3.5 pl-10 pr-11 text-sm font-medium text-[#5f574c] outline-none transition focus:border-[#b88a44] focus:bg-white focus:ring-4 focus:ring-[#b88a44]/10"
-              >
-                <option value="default">الترتيب الافتراضي</option>
-                <option value="newest">الأحدث أولًا</option>
-                <option value="price-low">السعر: من الأقل للأعلى</option>
-                <option value="price-high">السعر: من الأعلى للأقل</option>
-                <option value="discount">الأكثر خصمًا</option>
-                <option value="name">الاسم: أبجديًا</option>
-              </select>
-
-              <FaChevronDown className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-xs text-[#8a8175]" />
-            </div>
           </div>
 
-          {/* ACTIVE FILTERS */}
-          {hasFilters && (
-            <div className="mt-3 flex flex-wrap items-center justify-center gap-2 border-t border-[#eee5d5] pt-3 md:justify-start">
-              <span className="text-xs text-[#8a8175]">
-                {filteredProducts.length} نتيجة
-              </span>
+          {/* SORT */}
+          <div className="relative rounded-[22px] border border-[#eadfca] bg-white p-2 shadow-[0_8px_30px_rgba(74,46,27,0.05)]">
+            <select
+              value={sort}
+              onChange={(e) => handleSortChange(e.target.value)}
+              className="h-12 w-full appearance-none rounded-2xl bg-[#f9f6ee] px-4 pl-10 text-sm font-bold text-[#5f574c] outline-none transition focus:bg-white focus:ring-2 focus:ring-[#d49b35]/20"
+            >
+              <option value="default">ترتيب المنتجات</option>
+              <option value="newest">الأحدث أولًا</option>
+              <option value="price-low">السعر: من الأقل للأعلى</option>
+              <option value="price-high">السعر: من الأعلى للأقل</option>
+              <option value="discount">الأكثر خصمًا</option>
+              <option value="name">الاسم: أبجديًا</option>
+            </select>
 
-              {activeCategory && (
-                <span className="rounded-full bg-[#f8f3e8] px-3 py-1 text-xs font-semibold text-[#8a642f]">
-                  التصنيف: {activeCategory}
-                </span>
-              )}
-
-              {search && (
-                <span className="rounded-full bg-[#f8f3e8] px-3 py-1 text-xs font-semibold text-[#8a642f]">
-                  البحث: {search}
-                </span>
-              )}
-
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="text-xs font-semibold text-[#8a642f] underline decoration-[#c7a15a] underline-offset-4 transition hover:text-[#b88a44]"
-              >
-                مسح الفلاتر
-              </button>
-            </div>
-          )}
+            <FaChevronDown className="pointer-events-none absolute left-6 top-1/2 -translate-y-1/2 text-xs text-[#aaa093]" />
+          </div>
         </div>
 
         {/* =========================================================
-            PRODUCTS
+            FILTER STATUS
         ========================================================== */}
-        {filteredProducts.length === 0 ? (
-          <div className="rounded-[28px] border border-[#eadfca] bg-white px-6 py-20 text-center shadow-sm">
-            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#f8f3e8] text-[#b88a44]">
-              <FaSearch className="text-xl" />
+        {hasFilters && (
+          <div className="mb-7 flex flex-wrap items-center gap-2 rounded-[20px] border border-[#eadfca] bg-white px-4 py-3 shadow-sm">
+            <div className="flex items-center gap-2 text-xs font-bold text-[#8a8175]">
+              <FaSlidersH className="text-[#d49b35]" />
+
+              <span>النتائج</span>
+
+              <strong className="text-[#8a642f]">
+                {filteredProducts.length}
+              </strong>
             </div>
 
-            <h2 className="text-xl font-bold text-[#30291f]">
-              لم نجد منتجات مطابقة
-            </h2>
+            {activeCategory && (
+              <span className="rounded-full bg-[#f3eadc] px-3 py-1.5 text-[11px] font-bold text-[#8a642f]">
+                {activeCategory}
+              </span>
+            )}
 
-            <p className="mt-2 text-sm text-[#8a8175]">
-              جرّب تغيير كلمة البحث أو اختيار تصنيف آخر.
+            {search && (
+              <span className="max-w-[180px] truncate rounded-full bg-[#f9f6ee] px-3 py-1.5 text-[11px] font-bold text-[#8a642f]">
+                "{search}"
+              </span>
+            )}
+
+            <button
+              type="button"
+              onClick={clearFilters}
+              className="mr-auto rounded-full px-3 py-1.5 text-[11px] font-bold text-[#8a8175] transition hover:bg-[#f9f6ee] hover:text-[#4a2e1b]"
+            >
+              إعادة ضبط
+            </button>
+          </div>
+        )}
+
+        {/* =========================================================
+            PRODUCTS TITLE
+        ========================================================== */}
+        {filteredProducts.length > 0 && (
+          <div
+            ref={productsSectionRef}
+            className="mb-5 flex items-center justify-between"
+          >
+            <div>
+              <p className="text-[10px] font-black tracking-[0.22em] text-[#d49b35]">
+                SHAH DAN STORE
+              </p>
+
+              <h2 className="mt-1 text-xl font-black text-[#4a2e1b] sm:text-2xl">
+                المنتجات
+              </h2>
+            </div>
+
+            <span className="rounded-full bg-white px-4 py-2 text-[11px] font-bold text-[#8a8175] shadow-sm">
+              {filteredProducts.length} منتج
+            </span>
+          </div>
+        )}
+
+        {/* =========================================================
+            EMPTY
+        ========================================================== */}
+        {filteredProducts.length === 0 ? (
+          <div className="rounded-[30px] border border-[#eadfca] bg-white px-6 py-20 text-center shadow-[0_10px_40px_rgba(74,46,27,0.05)]">
+            <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-[24px] bg-[#f9f6ee] text-[#d49b35]">
+              <FaSearch className="text-2xl" />
+            </div>
+
+            <h2 className="text-xl font-black text-[#4a2e1b]">لا توجد نتائج</h2>
+
+            <p className="mx-auto mt-2 max-w-md text-sm leading-7 text-[#8a8175]">
+              لم نتمكن من العثور على منتجات تطابق خيارات البحث الحالية.
             </p>
 
             <button
               type="button"
               onClick={clearFilters}
-              className="mt-6 rounded-xl bg-[#b88a44] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#9d7337]"
+              className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-[#4a2e1b] px-6 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#5b3922]"
             >
-              عرض كل المنتجات
+              <FaBoxOpen />
+              عرض جميع المنتجات
             </button>
           </div>
         ) : (
-          <>
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs text-[#8a8175] md:text-sm">
-                  عرض{" "}
-                  <span className="font-bold text-[#8a642f]">
-                    {filteredProducts.length}
-                  </span>{" "}
-                  منتج
-                </p>
-              </div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-5 lg:grid-cols-4">
+            {filteredProducts.map((product) => {
+              const productCategories = Array.isArray(product.categories)
+                ? product.categories
+                : product.category
+                  ? [product.category]
+                  : [];
 
-              <div className="hidden items-center gap-2 text-xs text-[#8a8175] sm:flex">
-                <FaCheck className="text-[#b88a44]" />
-                منتجات مختارة بعناية
-              </div>
-            </div>
+              const oldPrice = Number(product.oldPrice || 0);
+              const price = Number(product.price || 0);
 
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 md:gap-5 lg:grid-cols-4 lg:gap-6">
-              {filteredProducts.map((product) => {
-                const productCategories = Array.isArray(product.categories)
-                  ? product.categories
-                  : product.category
-                    ? [product.category]
-                    : [];
+              const discount =
+                oldPrice > price
+                  ? Math.round(((oldPrice - price) / oldPrice) * 100)
+                  : 0;
 
-                const oldPrice = Number(product.oldPrice || 0);
-                const price = Number(product.price || 0);
+              const productUrl = product.seoSlug || product.slug || product.id;
 
-                const discount =
-                  oldPrice > price
-                    ? Math.round(((oldPrice - price) / oldPrice) * 100)
-                    : 0;
+              const wished = isInWishlist(product.id);
+              const isAdded = addedId === product.id;
 
-                const productUrl =
-                  product.seoSlug || product.slug || product.id;
-
-                const wished = isInWishlist(product.id);
-                const isAdded = addedId === product.id;
-
-                return (
-                  <div
-                    key={product.id}
-                    className="group relative overflow-hidden rounded-[22px] border border-[#eadfca] bg-white shadow-[0_8px_25px_rgba(92,67,35,0.06)] transition-all duration-300 hover:-translate-y-1 hover:border-[#c7a15a] hover:shadow-[0_18px_45px_rgba(92,67,35,0.13)]"
-                  >
-                    {/* DISCOUNT */}
-                    {discount > 0 && (
-                      <div className="absolute right-2 top-2 z-10 rounded-full bg-[red] px-2.5 py-1 text-[10px] font-black text-[white] shadow-md md:right-3 md:top-3 md:px-3 md:text-xs">
-                        خصم {discount}%
-                      </div>
-                    )}
-
-                    {/* WISHLIST */}
-                    <button
-                      type="button"
-                      onClick={(e) => handleToggleWishlist(e, product.id)}
-                      className={`absolute left-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full border bg-white/95 shadow-md backdrop-blur transition-all hover:scale-110 md:left-3 md:top-3 md:h-10 md:w-10 ${
-                        wished
-                          ? "border-red-100 text-red-500"
-                          : "border-[#eadfca] text-[#8a8175]"
-                      }`}
-                      aria-label={
-                        wished ? "إزالة من المفضلة" : "إضافة إلى المفضلة"
-                      }
+              return (
+                <article
+                  key={product.id}
+                  className="group relative overflow-hidden rounded-[26px] border border-[#eadfca] bg-white transition-all duration-300 hover:-translate-y-1 hover:border-[#d49b35] hover:shadow-[0_20px_45px_rgba(74,46,27,0.12)]"
+                >
+                  {/* IMAGE */}
+                  <div className="relative">
+                    <Link
+                      to={`/product/${productUrl}`}
+                      className="block overflow-hidden bg-[#f9f6ee]"
                     >
-                      <FaHeart
-                        size={14}
-                        className={wished ? "fill-current" : ""}
-                      />
-                    </button>
-
-                    {/* IMAGE */}
-                    <Link to={`/product/${productUrl}`} className="block">
-                      <div className="relative aspect-square overflow-hidden bg-[#f8f3e8]">
+                      <div className="relative aspect-[0.92]">
                         <img
                           src={
                             product.images?.[0] ||
                             "https://via.placeholder.com/500"
                           }
                           alt={product.name || "منتج شهدان"}
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
                           loading="lazy"
                         />
 
-                        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/10 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#4a2e1b]/20 via-transparent to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
                       </div>
                     </Link>
 
-                    {/* CONTENT */}
-                    <div className="p-3 md:p-5">
-                      {/* RATING */}
-                      <div className="mb-2 flex items-center gap-1">
-                        <div className="flex gap-0.5 text-[9px] text-[#c7a15a] md:text-xs">
+                    {discount > 0 && (
+                      <div className="absolute right-3 top-3 rounded-xl bg-[#8e6b8e] px-2.5 py-1.5 text-[10px] font-black text-white shadow-lg">
+                        -{discount}%
+                      </div>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={(e) => handleToggleWishlist(e, product.id)}
+                      className={`absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-xl border shadow-md backdrop-blur transition-all duration-300 hover:scale-110 ${
+                        wished
+                          ? "border-[#8e6b8e] bg-[#8e6b8e] text-white"
+                          : "border-white/70 bg-white/90 text-[#8a8175] hover:text-[#8e6b8e]"
+                      }`}
+                      aria-label={
+                        wished ? "إزالة من المفضلة" : "إضافة إلى المفضلة"
+                      }
+                    >
+                      <FaHeart
+                        size={13}
+                        className={wished ? "fill-current" : ""}
+                      />
+                    </button>
+
+                    {discount > 0 && (
+                      <div className="absolute bottom-3 right-3 flex items-center gap-1 rounded-full bg-white/90 px-2.5 py-1 text-[9px] font-black text-[#8a642f] shadow-sm backdrop-blur">
+                        <FaFire className="text-[#d49b35]" />
+                        عرض خاص
+                      </div>
+                    )}
+                  </div>
+
+                  {/* CONTENT */}
+                  <div className="p-3.5 md:p-5">
+                    {productCategories.length > 0 && (
+                      <div className="mb-2 flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#d49b35]" />
+
+                        <p className="line-clamp-1 text-[10px] font-bold text-[#8a8175] md:text-xs">
+                          {productCategories.join(" • ")}
+                        </p>
+                      </div>
+                    )}
+
+                    <Link to={`/product/${productUrl}`}>
+                      <h3 className="line-clamp-2 min-h-[40px] text-sm font-black leading-5 text-[#4a2e1b] transition-colors group-hover:text-[#8a642f] md:min-h-[48px] md:text-base md:leading-6">
+                        {product.name}
+                      </h3>
+                    </Link>
+
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <div className="flex gap-0.5 text-[9px] text-[#d49b35]">
                           {Array.from({ length: 5 }).map((_, i) => (
                             <FaStar key={i} />
                           ))}
                         </div>
 
-                        <span className="text-[9px] text-[#aaa093] md:text-xs">
-                          تقييمات
-                        </span>
+                        <span className="text-[9px] text-[#aaa093]">تقييم</span>
                       </div>
 
-                      {/* CATEGORY */}
-                      {productCategories.length > 0 && (
-                        <p className="mb-1 line-clamp-1 text-[10px] font-medium text-[#2f7559] md:text-xs">
-                          {productCategories.join(" • ")}
-                        </p>
-                      )}
+                      <span className="text-[9px] font-bold text-[#7a8b43]">
+                        متوفر
+                      </span>
+                    </div>
 
-                      {/* NAME */}
-                      <Link to={`/product/${productUrl}`}>
-                        <h3 className="line-clamp-2 min-h-[38px] text-sm font-bold leading-5 text-[#30291f] transition-colors group-hover:text-[#8a642f] md:min-h-[48px] md:text-lg md:leading-6">
-                          {product.name}
-                        </h3>
-                      </Link>
+                    <div className="mt-4 flex items-end justify-between gap-2">
+                      <div>
+                        <p className="text-xl font-black text-[#4a2e1b] md:text-2xl">
+                          {product.price}
 
-                      {/* PRICE */}
-                      <div className="mt-2 flex flex-wrap items-center gap-2 md:mt-3">
-                        <p className="text-base font-black text-[#1b7f52] md:text-2xl">
-                          {product.price}{" "}
-                          <span className="text-[10px] font-bold md:text-sm">
+                          <span className="mr-1 text-[9px] font-bold text-[#8a8175] md:text-xs">
                             ر.س
                           </span>
                         </p>
 
                         {discount > 0 && (
-                          <span className="text-[10px] text-[red] line-through md:text-sm">
+                          <p className="mt-0.5 text-[10px] text-[#aaa093] line-through md:text-xs">
                             {product.oldPrice} ر.س
-                          </span>
+                          </p>
                         )}
                       </div>
 
-                      {/* ADD TO CART */}
-                      <button
-                        type="button"
-                        onClick={(e) => handleAddToCart(e, product)}
-                        className={`mt-3 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-bold text-white shadow-sm transition-all duration-300 md:mt-5 md:py-3.5 md:text-sm ${
-                          isAdded
-                            ? "bg-[#6f572e]"
-                            : "bg-gradient-to-r from-[#b88a44] to-[#9d7337] hover:-translate-y-0.5 hover:from-[#9d7337] hover:to-[#8a642f] hover:shadow-lg"
-                        }`}
-                      >
-                        {isAdded ? (
-                          <>
-                            <FaCheck />
-                            أضيف للسلة
-                          </>
-                        ) : (
-                          <>
-                            <FaShoppingCart />
-                            أضف للسلة
-                          </>
-                        )}
-                      </button>
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#f9f6ee] text-[#d49b35]">
+                        <FaShoppingCart className="text-xs" />
+                      </span>
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={(e) => handleAddToCart(e, product)}
+                      className={`mt-4 flex w-full items-center justify-center gap-2 rounded-2xl py-3 text-xs font-black transition-all duration-300 md:py-3.5 md:text-sm ${
+                        isAdded
+                          ? "bg-[#7a8b43] text-white"
+                          : "bg-[#4a2e1b] text-white hover:-translate-y-0.5 hover:bg-[#5b3922] hover:shadow-lg"
+                      }`}
+                    >
+                      {isAdded ? (
+                        <>
+                          <FaCheck />
+                          تمت الإضافة
+                        </>
+                      ) : (
+                        <>
+                          أضف إلى السلة
+                          <FaArrowLeft className="text-[10px]" />
+                        </>
+                      )}
+                    </button>
                   </div>
-                );
-              })}
-            </div>
-          </>
+                </article>
+              );
+            })}
+          </div>
         )}
       </div>
     </section>

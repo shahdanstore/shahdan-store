@@ -57,7 +57,7 @@ ${window.location.href}
       <div className="hidden sm:block">
         <p className="text-sm font-bold">تحدث معنا</p>
 
-        <p className="text-xs opacity-90">خدمة عملاء شهدان ستور</p>
+        <p className="text-xs opacity-90">خدمة عملاء</p>
       </div>
     </a>
   );
