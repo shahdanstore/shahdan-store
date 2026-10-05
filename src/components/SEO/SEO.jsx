@@ -2,7 +2,7 @@ import { Helmet } from "react-helmet-async";
 
 const SITE_URL = "https://shahdanstore.com";
 const STORE_NAME = "شهدان ستور";
-const BRAND_NAME = "شهدان";
+const BRAND_NAME = "شهدان ستور";
 
 function stripHtml(value = "") {
   return value

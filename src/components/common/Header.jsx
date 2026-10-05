@@ -4,7 +4,6 @@ import {
   FaSearch,
   FaShoppingCart,
   FaHeart,
-  FaUser,
   FaBars,
   FaTimes,
   FaChevronLeft,
@@ -108,7 +107,6 @@ function Header() {
 
   const handleCategoryClick = (categoryName) => {
     navigate(`/products?category=${encodeURIComponent(categoryName)}`);
-
     closeMenu();
   };
 
@@ -140,15 +138,21 @@ function Header() {
     },
   ];
 
+  const isHome = location.pathname === "/";
+  const isProducts = location.pathname.startsWith("/products");
+  const isCategories = location.pathname.startsWith("/categories");
+  const isWishlist = location.pathname.startsWith("/wishlist");
+  const isCart = location.pathname.startsWith("/cart");
+
   return (
     <>
       <header className="fixed left-0 right-0 top-0 z-[99990]">
-        {/* =========================================
-            Announcement Bar
-            ========================================= */}
+        {/* =====================================================
+            ANNOUNCEMENT BAR
+        ====================================================== */}
         {settings?.announcementBar?.enabled && (
           <div
-            className="h-10 overflow-hidden"
+            className="h-9 overflow-hidden sm:h-10"
             style={{
               backgroundColor:
                 settings?.announcementBar?.backgroundColor || "#171717",
@@ -159,16 +163,16 @@ function Header() {
               <AnimatePresence initial={false}>
                 <motion.div
                   key={currentMessage}
-                  initial={{ y: 24, opacity: 0 }}
+                  initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  exit={{ y: -24, opacity: 0 }}
+                  exit={{ y: -20, opacity: 0 }}
                   transition={{
-                    duration: 0.22,
+                    duration: 0.25,
                     ease: [0.22, 1, 0.36, 1],
                   }}
-                  className="absolute inset-0 flex items-center justify-center will-change-transform"
+                  className="absolute inset-0 flex items-center justify-center"
                 >
-                  <span className="whitespace-nowrap text-sm font-medium">
+                  <span className="whitespace-nowrap text-[11px] font-medium sm:text-sm">
                     {messages[currentMessage]}
                   </span>
                 </motion.div>
@@ -177,27 +181,33 @@ function Header() {
           </div>
         )}
 
-        {/* =========================================
-            Main Header
-            ========================================= */}
-        <div className="border-b border-[#e8e1d7] bg-[#faf8f3]/95 shadow-sm backdrop-blur-xl transition-all duration-300">
-          <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-            {/* Mobile menu */}
+        {/* =====================================================
+            MAIN HEADER
+        ====================================================== */}
+        <div className="border-b border-[#e8e1d7] bg-[#faf8f3]/95 shadow-sm backdrop-blur-xl">
+          <div className="relative mx-auto flex h-[76px] max-w-7xl items-center justify-between px-4 sm:px-6 md:h-[82px]">
+            {/* =================================================
+                MOBILE MENU BUTTON
+            ================================================== */}
             <button
               type="button"
-              onClick={() => {
-                setMenuOpen(true);
-              }}
-              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#e8e1d7] bg-white text-xl text-[#242424] shadow-sm transition-all duration-300 hover:border-[#b08d57] hover:text-[#b08d57] active:scale-90 md:hidden"
+              onClick={() => setMenuOpen(true)}
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#e8e1d7] bg-white text-[#171717] shadow-sm transition-all duration-300 hover:border-[#b08d57] hover:text-[#b08d57] active:scale-90 md:hidden"
               aria-label="فتح القائمة"
             >
-              <FaBars />
+              <FaBars className="text-lg" />
             </button>
-            {/* =========================================
-                Logo
-                ========================================= */}
-            <Link to="/" className="group flex items-center gap-3">
-              <div className="h-12 w-12 overflow-hidden rounded-full border border-[#d4b477]/40 bg-white shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-md sm:h-14 sm:w-14">
+
+            {/* =================================================
+                LOGO
+                Mobile: centered
+                Desktop: normal
+            ================================================== */}
+            <Link
+              to="/"
+              className="group absolute left-1/2 flex -translate-x-1/2 items-center gap-3 md:static md:translate-x-0"
+            >
+              <div className="h-12 w-12 overflow-hidden rounded-full border border-[#d4b477]/50 bg-white shadow-sm transition-all duration-300 group-hover:scale-105 group-hover:shadow-md sm:h-14 sm:w-14">
                 <img
                   src="/logo.png"
                   alt="شهدان ستور"
@@ -205,111 +215,167 @@ function Header() {
                 />
               </div>
 
-              <div className="flex flex-col leading-none">
-                <h1 className="text-2xl font-bold tracking-tight text-[#171717] sm:text-3xl">
+              <div className="hidden flex-col leading-none md:flex">
+                <h1 className="text-2xl font-bold tracking-tight text-[#171717] lg:text-3xl">
                   شهدان
                 </h1>
+
+                <span className="mt-1 text-[9px] font-medium tracking-[0.25em] text-[#b08d57]">
+                  ستور
+                </span>
               </div>
             </Link>
-            {/* ========================================= Desktop Navigation - New Style ========================================= */}{" "}
-            <nav className="hidden md:flex items-center rounded-full border border-[#e8e1d7] bg-white/90 p-1.5 shadow-[0_6px_24px_rgba(74,46,27,0.06)] backdrop-blur-md">
-              {" "}
+
+            {/* =================================================
+                DESKTOP NAVIGATION
+            ================================================== */}
+            <nav className="hidden items-center rounded-full border border-[#e8e1d7] bg-white/90 p-1.5 shadow-[0_6px_24px_rgba(23,23,23,0.05)] backdrop-blur-md md:flex">
               <Link
                 to="/"
-                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname === "/" ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
+                className={`group flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+                  isHome
+                    ? "bg-[#171717] text-white shadow-md"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
+                }`}
               >
-                {" "}
                 <FaHome
-                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname === "/" ? "text-[#d4b477]" : "text-[#b08d57]"}`}
-                />{" "}
-                <span>الرئيسية</span>{" "}
-              </Link>{" "}
+                  className={`text-xs ${
+                    isHome ? "text-[#d4b477]" : "text-[#b08d57]"
+                  }`}
+                />
+                <span>الرئيسية</span>
+              </Link>
+
               <Link
                 to="/products"
-                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname.startsWith("/products") ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
+                className={`group flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+                  isProducts
+                    ? "bg-[#171717] text-white shadow-md"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
+                }`}
               >
-                {" "}
                 <FaBoxOpen
-                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname.startsWith("/products") ? "text-[#d4b477]" : "text-[#b08d57]"}`}
-                />{" "}
-                <span>المنتجات</span>{" "}
-              </Link>{" "}
+                  className={`text-xs ${
+                    isProducts ? "text-[#d4b477]" : "text-[#b08d57]"
+                  }`}
+                />
+                <span>المنتجات</span>
+              </Link>
+
               <Link
                 to="/categories"
-                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname.startsWith("/categories") ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
+                className={`group flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+                  isCategories
+                    ? "bg-[#171717] text-white shadow-md"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
+                }`}
               >
-                {" "}
                 <FaThLarge
-                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname.startsWith("/categories") ? "text-[#d4b477]" : "text-[#b08d57]"}`}
-                />{" "}
-                <span>التصنيفات</span>{" "}
-              </Link>{" "}
+                  className={`text-xs ${
+                    isCategories ? "text-[#d4b477]" : "text-[#b08d57]"
+                  }`}
+                />
+                <span>التصنيفات</span>
+              </Link>
+
               <Link
                 to="/about"
-                className={`group relative flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${location.pathname.startsWith("/about") ? "bg-[#4a2e1b] text-white shadow-md" : "text-[#4a2e1b] hover:bg-[#f9f6ee] hover:text-[#b08d57]"}`}
+                className={`group flex items-center gap-2 rounded-full px-5 py-2.5 text-sm font-bold transition-all duration-300 ${
+                  location.pathname.startsWith("/about")
+                    ? "bg-[#171717] text-white shadow-md"
+                    : "text-[#242424] hover:bg-[#f3eadc] hover:text-[#b08d57]"
+                }`}
               >
-                {" "}
                 <FaPhoneAlt
-                  className={`text-xs transition-transform duration-300 group-hover:scale-110 ${location.pathname.startsWith("/about") ? "text-[#d4b477]" : "text-[#b08d57]"}`}
-                />{" "}
-                <span>من نحن</span>{" "}
-              </Link>{" "}
+                  className={`text-xs ${
+                    location.pathname.startsWith("/about")
+                      ? "text-[#d4b477]"
+                      : "text-[#b08d57]"
+                  }`}
+                />
+                <span>من نحن</span>
+              </Link>
             </nav>
-            {/* =========================================
-                Desktop Search
-                ========================================= */}
-            {/* =========================================
-                Icons
-                ========================================= */}
-            <div className="flex items-center gap-2 text-xl sm:gap-3">
+
+            {/* =================================================
+                DESKTOP ACTIONS
+            ================================================== */}
+            <div className="hidden items-center gap-2 md:flex">
+              {/* Search */}
+              <form
+                onSubmit={handleSearchSubmit}
+                className="flex h-11 w-[190px] items-center gap-2 rounded-full border border-[#e8e1d7] bg-white px-2 shadow-sm transition-all duration-300 focus-within:border-[#b08d57] focus-within:shadow-md"
+              >
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f3eadc] text-[#b08d57]">
+                  <FaSearch className="text-xs" />
+                </div>
+
+                <input
+                  type="text"
+                  value={searchInput}
+                  onChange={(e) => setSearchInput(e.target.value)}
+                  placeholder="ابحث عن منتج..."
+                  className="min-w-0 flex-1 bg-transparent text-xs text-[#242424] outline-none placeholder:text-[#9a9a9a]"
+                />
+
+                <button
+                  type="submit"
+                  className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#171717] text-[#d4b477] transition hover:bg-[#b08d57] hover:text-white"
+                  aria-label="بحث"
+                >
+                  <FaArrowLeft className="text-[10px]" />
+                </button>
+              </form>
+
+              {/* Track Order */}
               <Link
                 to="/track-order"
                 title="متابعة الطلب"
                 aria-label="متابعة الطلب"
-                className="flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] active:scale-90"
               >
-                <FaUser />
+                <FaClipboardList />
               </Link>
 
+              {/* Wishlist */}
               <Link
                 to="/wishlist"
                 title="المفضلة"
                 aria-label="المفضلة"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] active:scale-90"
               >
                 <FaHeart />
 
                 {wishlistCount > 0 && (
-                  <span className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[11px] font-bold text-white shadow-md">
+                  <span className="absolute -right-1 -top-1 flex min-h-[19px] min-w-[19px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[10px] font-bold text-white shadow-md">
                     {wishlistCount}
                   </span>
                 )}
               </Link>
 
+              {/* Cart */}
               <Link
                 to="/cart"
                 title="السلة"
                 aria-label="السلة"
-                className={`relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] hover:shadow-md active:scale-90 ${cartAnimating ? "scale-125 bg-[#f3eadc] text-[#b08d57]" : ""}`}
+                className={`relative flex h-11 w-11 items-center justify-center rounded-full text-[#242424] transition-all duration-300 hover:bg-[#f3eadc] hover:text-[#b08d57] active:scale-90 ${
+                  cartAnimating ? "scale-110 bg-[#f3eadc] text-[#b08d57]" : ""
+                }`}
               >
-                {" "}
-                {/* Added Quantity */}{" "}
                 <AnimatePresence>
-                  {" "}
                   {cartPopup && (
                     <motion.span
                       initial={{ opacity: 0, y: 8, scale: 0.5 }}
                       animate={{ opacity: 1, y: -4, scale: 1 }}
                       exit={{ opacity: 0, y: -18, scale: 0.7 }}
                       transition={{ duration: 0.35 }}
-                      className="pointer-events-none absolute -top-7 right-0 z-50 rounded-full bg-[#d49b35] px-2 py-1 text-[11px] font-black text-white shadow-lg"
+                      className="pointer-events-none absolute -top-7 right-0 z-50 rounded-full bg-[#b08d57] px-2 py-1 text-[11px] font-black text-white shadow-lg"
                     >
-                      {" "}
-                      +{cartPopup}{" "}
+                      +{cartPopup}
                     </motion.span>
-                  )}{" "}
-                </AnimatePresence>{" "}
-                {/* Cart Icon */}{" "}
+                  )}
+                </AnimatePresence>
+
                 <motion.span
                   animate={
                     cartAnimating
@@ -321,48 +387,148 @@ function Header() {
                   }
                   transition={{ duration: 0.65, ease: "easeInOut" }}
                 >
-                  {" "}
-                  <FaShoppingCart />{" "}
-                </motion.span>{" "}
-                {/* Cart Count */}{" "}
+                  <FaShoppingCart />
+                </motion.span>
+
                 {cartCount > 0 && (
                   <motion.span
                     key={cartCount}
                     initial={{ scale: 0.5 }}
-                    animate={{ scale: cartAnimating ? [1, 1.35, 1] : 1 }}
+                    animate={{
+                      scale: cartAnimating ? [1, 1.35, 1] : 1,
+                    }}
                     transition={{ duration: 0.45 }}
-                    className="absolute -right-1 -top-1 flex min-h-[20px] min-w-[20px] items-center justify-center rounded-full bg-[#d49b35] px-1 text-[11px] font-black text-white shadow-md"
+                    className="absolute -right-1 -top-1 flex min-h-[19px] min-w-[19px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[10px] font-black text-white shadow-md"
                   >
-                    {" "}
-                    {cartCount}{" "}
+                    {cartCount}
                   </motion.span>
-                )}{" "}
-                {/* Glow */}{" "}
+                )}
+
                 <AnimatePresence>
-                  {" "}
                   {cartAnimating && (
                     <motion.span
                       initial={{ opacity: 0, scale: 0.5 }}
-                      animate={{ opacity: 0.45, scale: 1.8 }}
+                      animate={{ opacity: 0.4, scale: 1.8 }}
                       exit={{ opacity: 0, scale: 2.2 }}
                       transition={{ duration: 0.6 }}
-                      className="pointer-events-none absolute inset-0 rounded-full bg-[#d49b35]/30"
+                      className="pointer-events-none absolute inset-0 rounded-full bg-[#b08d57]/25"
                     />
-                  )}{" "}
-                </AnimatePresence>{" "}
+                  )}
+                </AnimatePresence>
               </Link>
             </div>
           </div>
         </div>
       </header>
 
-      {/* =========================================
-          New Mobile Menu
-          ========================================= */}
+      {/* =======================================================
+    MOBILE BOTTOM NAVIGATION
+======================================================== */}
+      <nav className="fixed bottom-0 left-0 right-0 z-[99989] border-t border-[#e8e1d7] bg-[#faf8f3]/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_30px_rgba(23,23,23,0.08)] backdrop-blur-xl md:hidden">
+        <div className="mx-auto flex max-w-md items-center justify-around">
+          {/* الرئيسية */}
+          <Link
+            to="/"
+            className={`flex min-w-[54px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all duration-200 ${
+              isHome ? "bg-[#f3eadc] text-[#b08d57]" : "text-[#737373]"
+            }`}
+          >
+            <FaHome className="text-[17px]" />
+            <span className="text-[9px] font-bold">الرئيسية</span>
+          </Link>
+
+          {/* المنتجات */}
+          <Link
+            to="/products"
+            className={`flex min-w-[54px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all duration-200 ${
+              isProducts ? "bg-[#f3eadc] text-[#b08d57]" : "text-[#737373]"
+            }`}
+          >
+            <FaBoxOpen className="text-[17px]" />
+            <span className="text-[9px] font-bold">المنتجات</span>
+          </Link>
+
+          {/* المفضلة */}
+          <Link
+            to="/wishlist"
+            className={`relative flex min-w-[54px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all duration-200 ${
+              isWishlist ? "bg-[#f3eadc] text-[#b08d57]" : "text-[#737373]"
+            }`}
+          >
+            <span className="relative">
+              <FaHeart className="text-[17px]" />
+
+              {wishlistCount > 0 && (
+                <span className="absolute -right-3 -top-2 flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[8px] font-bold text-white">
+                  {wishlistCount}
+                </span>
+              )}
+            </span>
+
+            <span className="text-[9px] font-bold">المفضلة</span>
+          </Link>
+
+          {/* متابعة الطلب */}
+          <Link
+            to="/track-order"
+            className={`flex min-w-[54px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all duration-200 ${
+              location.pathname.startsWith("/track-order")
+                ? "bg-[#f3eadc] text-[#b08d57]"
+                : "text-[#737373]"
+            }`}
+          >
+            <FaClipboardList className="text-[17px]" />
+            <span className="text-[9px] font-bold">متابعة الطلب</span>
+          </Link>
+
+          {/* السلة */}
+          <Link
+            to="/cart"
+            className={`relative flex min-w-[54px] flex-col items-center gap-1 rounded-2xl px-2 py-1.5 transition-all duration-200 ${
+              isCart ? "bg-[#f3eadc] text-[#b08d57]" : "text-[#737373]"
+            } ${cartAnimating ? "scale-110" : ""}`}
+          >
+            <span className="relative">
+              <motion.span
+                animate={
+                  cartAnimating
+                    ? {
+                        rotate: [0, -12, 12, -8, 8, 0],
+                        scale: [1, 1.2, 1.1, 1.2, 1],
+                      }
+                    : { rotate: 0, scale: 1 }
+                }
+                transition={{ duration: 0.65 }}
+              >
+                <FaShoppingCart className="text-[17px]" />
+              </motion.span>
+
+              {cartCount > 0 && (
+                <motion.span
+                  key={cartCount}
+                  initial={{ scale: 0.5 }}
+                  animate={{
+                    scale: cartAnimating ? [1, 1.3, 1] : 1,
+                  }}
+                  className="absolute -right-3 -top-2 flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-[#b08d57] px-1 text-[8px] font-black text-white"
+                >
+                  {cartCount}
+                </motion.span>
+              )}
+            </span>
+
+            <span className="text-[9px] font-bold">السلة</span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* =======================================================
+          MOBILE MENU / BOTTOM SHEET
+      ======================================================== */}
       <AnimatePresence>
         {menuOpen && (
           <div className="fixed inset-0 z-[2147483647] md:hidden">
-            {/* Background */}
+            {/* Overlay */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -372,7 +538,7 @@ function Header() {
               className="absolute inset-0 bg-[#171717]/70 backdrop-blur-md"
             />
 
-            {/* Main Menu */}
+            {/* Sheet */}
             <motion.div
               initial={{ opacity: 0, y: "100%" }}
               animate={{ opacity: 1, y: 0 }}
@@ -381,21 +547,21 @@ function Header() {
                 duration: 0.4,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="absolute inset-x-0 bottom-0 flex max-h-[94vh] flex-col overflow-hidden rounded-t-[32px] bg-[#faf8f3] shadow-2xl"
+              className="absolute inset-x-0 bottom-0 flex max-h-[92vh] flex-col overflow-hidden rounded-t-[30px] bg-[#faf8f3] shadow-2xl"
             >
-              {/* Top Handle */}
+              {/* Handle */}
               <div className="flex justify-center pt-3">
-                <span className="h-1 w-12 rounded-full bg-[#d8d0c4]" />
+                <span className="h-1 w-12 rounded-full bg-[#d4d0c8]" />
               </div>
 
-              {/* Menu Header */}
+              {/* Header */}
               <div className="flex items-center justify-between px-5 pb-4 pt-3">
                 <Link
                   to="/"
                   onClick={closeMenu}
                   className="flex items-center gap-3"
                 >
-                  <div className="h-12 w-12 overflow-hidden rounded-2xl border border-[#d4b477]/40 bg-white shadow-sm">
+                  <div className="h-11 w-11 overflow-hidden rounded-xl border border-[#d4b477]/40 bg-white shadow-sm">
                     <img
                       src="/logo.png"
                       alt="شهدان ستور"
@@ -405,21 +571,24 @@ function Header() {
 
                   <div>
                     <p className="text-lg font-bold text-[#171717]">شهدان</p>
+                    <p className="text-[9px] tracking-[0.2em] text-[#b08d57]">
+                      ستور
+                    </p>
                   </div>
                 </Link>
 
                 <button
                   type="button"
                   onClick={closeMenu}
-                  className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-lg text-[#242424] shadow-sm transition-all duration-300 hover:text-[#b08d57] active:scale-90"
+                  className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-[#242424] shadow-sm transition-all duration-300 hover:text-[#b08d57] active:scale-90"
                   aria-label="إغلاق القائمة"
                 >
                   <FaTimes />
                 </button>
               </div>
 
-              {/* Scrollable Content */}
-              <div className="overflow-y-auto px-5 pb-8">
+              {/* Content */}
+              <div className="overflow-y-auto px-5 pb-28">
                 {/* Welcome */}
                 <div className="mb-5 rounded-[24px] bg-[#171717] p-5 text-white shadow-lg">
                   <p className="mb-1 text-xs font-medium text-[#d4b477]">
@@ -428,7 +597,7 @@ function Header() {
 
                   <h2 className="text-xl font-bold">عالم شهدان</h2>
 
-                  <p className="mt-2 text-xs leading-6 text-white/65">
+                  <p className="mt-2 text-xs leading-6 text-white/60">
                     اكتشف منتجاتنا واختر ما يناسبك بسهولة.
                   </p>
                 </div>
@@ -511,7 +680,7 @@ function Header() {
                               </span>
 
                               <FaChevronLeft
-                                className={`mt-1 text-[10px] transition-transform duration-300 group-hover:-translate-x-1 ${
+                                className={`mt-1 text-[10px] ${
                                   active ? "text-[#d4b477]" : "text-[#b08d57]"
                                 }`}
                               />
@@ -535,7 +704,7 @@ function Header() {
                         to="/wishlist"
                         onClick={closeMenu}
                         className={`group relative flex min-h-[86px] flex-col justify-between rounded-[22px] border p-4 transition-all duration-300 active:scale-[0.97] ${
-                          location.pathname.startsWith("/wishlist")
+                          isWishlist
                             ? "border-[#b08d57] bg-[#171717] text-white shadow-lg"
                             : "border-[#e8e1d7] bg-white text-[#242424] hover:border-[#d4b477] hover:shadow-md"
                         }`}
@@ -558,7 +727,7 @@ function Header() {
                   </div>
                 </section>
 
-                {/* Cart Shortcut */}
+                {/* Cart */}
                 <Link
                   to="/cart"
                   onClick={closeMenu}
@@ -614,9 +783,9 @@ function Header() {
                           }}
                           className="group relative min-h-[130px] overflow-hidden rounded-[22px] border border-[#e8e1d7] bg-white text-right shadow-sm transition-all duration-300 hover:shadow-md active:scale-[0.97]"
                         >
-                          {cat.image ? (
+                          {cat.image || cat.imageUrl ? (
                             <img
-                              src={cat.image}
+                              src={cat.image || cat.imageUrl}
                               alt={cat.name}
                               loading="lazy"
                               className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -625,7 +794,7 @@ function Header() {
                             <div className="absolute inset-0 bg-[#f3eadc]" />
                           )}
 
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/80 via-[#171717]/10 to-transparent" />
 
                           <div className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-2 p-3 text-white">
                             <span className="text-sm font-bold drop-shadow-sm">
@@ -647,12 +816,21 @@ function Header() {
         )}
       </AnimatePresence>
 
-      {/* Space for fixed header */}
+      {/* =======================================================
+          FIXED HEADER SPACE
+      ======================================================== */}
       <div
         className={
-          settings?.announcementBar?.enabled ? "h-[128px]" : "h-[88px]"
+          settings?.announcementBar?.enabled
+            ? "h-[60px] md:h-[122px]"
+            : "h-[76px] md:h-[82px]"
         }
       />
+
+      {/* =======================================================
+          MOBILE BOTTOM NAV SPACE
+      ======================================================== */}
+      <div className="h-[76px] md:hidden" />
     </>
   );
 }

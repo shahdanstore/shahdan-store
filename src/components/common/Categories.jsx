@@ -9,38 +9,45 @@ function Categories() {
   return (
     <section
       dir="rtl"
-      className="relative overflow-hidden bg-gradient-to-b from-white via-[#fdfbf7] to-[#f8f3e8] py-16 md:py-20"
+      className="relative overflow-hidden bg-[#f8f5ed] py-14 md:py-20"
     >
-      {/* Decorative background */}
-      <div className="pointer-events-none absolute -right-24 top-10 h-64 w-64 rounded-full bg-[#c7a15a]/10 blur-3xl" />
-      <div className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#b88a44]/5 blur-3xl" />
+      {/* Decorative Background */}
+      <div className="pointer-events-none absolute -right-32 top-0 h-72 w-72 rounded-full bg-[#cea253]/10 blur-3xl" />
+      <div className="pointer-events-none absolute -left-32 bottom-0 h-80 w-80 rounded-full bg-[#71804a]/10 blur-3xl" />
 
       <div className="relative mx-auto max-w-7xl px-4 md:px-6">
         {/* Section Header */}
-        <div className="mb-10 text-center md:mb-12">
-          <h2 className="mt-2 text-3xl font-black text-[#30291f] md:text-4xl">
-            التصنيفات
+        <div className="mb-10 text-center md:mb-14">
+          <h2 className="text-3xl font-black tracking-tight text-[#442410] md:text-4xl lg:text-5xl">
+            تصفح التصنيفات
           </h2>
 
-          <div className="mx-auto mt-4 h-1 w-16 rounded-full bg-gradient-to-r from-[#b88a44] to-[#c7a15a]" />
+          <div className="mx-auto mt-5 flex items-center justify-center gap-3">
+            <span className="h-px w-12 bg-[#c8a15b] md:w-16" />
+            <span className="h-1.5 w-1.5 rotate-45 bg-[#c8a15b]" />
+            <span className="h-px w-12 bg-[#c8a15b] md:w-16" />
+          </div>
 
-          <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#8a8175] md:text-base">
-            اكتشف منتجات شهدان بسهولة من خلال تصنيفاتنا المختارة بعناية.
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#897542] md:text-base">
+            اكتشف مجموعتنا المختارة بعناية من المنتجات الطبيعية.
           </p>
         </div>
 
+        {/* Empty State */}
         {categories.length === 0 ? (
-          <div className="rounded-3xl border border-[#eadfca] bg-white px-6 py-12 text-center shadow-sm">
-            <FaLayerGroup className="mx-auto mb-4 text-3xl text-[#c7a15a]" />
+          <div className="rounded-[28px] border border-[#e3d8c5] bg-[#fffdf8] px-6 py-14 text-center shadow-[0_10px_35px_rgba(68,36,16,0.06)]">
+            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#f1ede4]">
+              <FaLayerGroup className="text-2xl text-[#c28f3d]" />
+            </div>
 
-            <p className="font-semibold text-[#30291f]">لا توجد تصنيفات بعد.</p>
+            <p className="font-bold text-[#442410]">لا توجد تصنيفات بعد.</p>
 
-            <p className="mt-2 text-sm text-[#8a8175]">
+            <p className="mt-2 text-sm text-[#897542]">
               ستظهر التصنيفات هنا عند إضافتها من لوحة التحكم.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:gap-5 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 sm:gap-4 md:gap-5 lg:grid-cols-4">
             {categories.map((item) => {
               const categoryImage = item.image || item.imageUrl;
 
@@ -48,7 +55,23 @@ function Categories() {
                 <Link
                   to={`/products?category=${encodeURIComponent(item.name)}`}
                   key={item.id}
-                  className="group relative aspect-[0.82] overflow-hidden rounded-[28px] border border-[#eadfca] bg-[#f8f3e8] shadow-[0_10px_35px_rgba(92,67,35,0.08)] transition-all duration-500 hover:-translate-y-2 hover:border-[#d8c39b] hover:shadow-[0_20px_50px_rgba(92,67,35,0.16)]"
+                  className="
+                    group
+                    relative
+                    aspect-[0.82]
+                    overflow-hidden
+                    rounded-[24px]
+                    border
+                    border-[#dfd2bd]
+                    bg-[#eee7d8]
+                    shadow-[0_8px_28px_rgba(68,36,16,0.08)]
+                    transition-all
+                    duration-500
+                    hover:-translate-y-1.5
+                    hover:border-[#c28f3d]
+                    hover:shadow-[0_18px_45px_rgba(68,36,16,0.15)]
+                    md:rounded-[28px]
+                  "
                 >
                   {/* Category Image */}
                   <div className="absolute inset-0">
@@ -56,45 +79,97 @@ function Categories() {
                       <img
                         src={categoryImage}
                         alt={item.name}
-                        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                         loading="lazy"
+                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                         onError={(e) => {
                           e.currentTarget.style.display = "none";
+
                           e.currentTarget.parentElement.innerHTML =
-                            '<div class="flex h-full w-full items-center justify-center"><span class="text-5xl text-[#b88a44]">✦</span></div>';
+                            '<div class="flex h-full w-full items-center justify-center bg-[#eee7d8]"><span class="text-5xl text-[#c28f3d]">✦</span></div>';
                         }}
                       />
                     ) : (
-                      <div className="flex h-full w-full items-center justify-center">
-                        <FaLayerGroup className="text-5xl text-[#b88a44]" />
+                      <div className="flex h-full w-full items-center justify-center bg-[#eee7d8]">
+                        <FaLayerGroup className="text-5xl text-[#c28f3d]" />
                       </div>
                     )}
                   </div>
 
-                  {/* Image Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/85 via-[#171717]/15 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
+                  {/* Natural Dark Overlay */}
+                  <div
+                    className="
+                      absolute inset-0
+                      bg-gradient-to-t
+                      from-[#442410]/90
+                      via-[#442410]/25
+                      to-transparent
+                      opacity-90
+                      transition-opacity
+                      duration-500
+                      group-hover:opacity-100
+                    "
+                  />
 
                   {/* Top Badge */}
-                  <div className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-white/15 text-white backdrop-blur-md transition-all duration-300 group-hover:scale-110 group-hover:bg-[#b88a44]">
-                    <FaArrowLeft className="text-xs" />
+                  <div
+                    className="
+                      absolute
+                      right-3
+                      top-3
+                      flex
+                      h-9
+                      w-9
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      border-white/30
+                      bg-[#442410]/35
+                      text-[#f1d18d]
+                      backdrop-blur-md
+                      transition-all
+                      duration-300
+                      group-hover:scale-105
+                      group-hover:border-[#d6b16b]
+                      group-hover:bg-[#c28f3d]
+                      group-hover:text-white
+                      md:right-4
+                      md:top-4
+                    "
+                  >
+                    <FaArrowLeft className="text-[10px]" />
                   </div>
 
                   {/* Category Content */}
-                  <div className="absolute inset-x-0 bottom-0 p-4 text-right md:p-5">
-                    <div className="mb-2 h-1 w-8 rounded-full bg-[#d4b477] transition-all duration-500 group-hover:w-14" />
+                  <div className="absolute inset-x-0 bottom-0 p-3.5 text-right md:p-5">
+                    <div className="mb-2 h-0.5 w-8 rounded-full bg-[#d6b16b] transition-all duration-500 group-hover:w-14" />
 
-                    <h3 className="text-lg font-black text-white md:text-xl">
+                    <h3 className="line-clamp-2 text-base font-black text-white md:text-xl">
                       {item.name}
                     </h3>
 
-                    <div className="mt-2 flex items-center gap-2 text-xs font-medium text-white/70 transition-colors duration-300 group-hover:text-[#f8e6b8]">
+                    <div className="mt-2 flex items-center gap-1.5 text-[10px] font-medium text-white/70 transition-colors duration-300 group-hover:text-[#f1d18d] md:text-xs">
                       <span>استكشف التصنيف</span>
-                      <FaArrowLeft className="text-[10px] transition-transform duration-300 group-hover:-translate-x-1" />
+
+                      <FaArrowLeft className="text-[8px] transition-transform duration-300 group-hover:-translate-x-1 md:text-[10px]" />
                     </div>
                   </div>
 
-                  {/* Gold Border Glow */}
-                  <div className="pointer-events-none absolute inset-0 rounded-[28px] border border-transparent transition-colors duration-500 group-hover:border-[#d4b477]/60" />
+                  {/* Gold Border */}
+                  <div
+                    className="
+                      pointer-events-none
+                      absolute
+                      inset-0
+                      rounded-[24px]
+                      border
+                      border-transparent
+                      transition-all
+                      duration-500
+                      group-hover:border-[#d6b16b]/80
+                      md:rounded-[28px]
+                    "
+                  />
                 </Link>
               );
             })}

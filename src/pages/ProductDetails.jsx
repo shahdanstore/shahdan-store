@@ -20,7 +20,7 @@ function ProductDetails() {
   const navigate = useNavigate();
 
   const [showFloatingProduct, setShowFloatingProduct] = useState(false);
-
+  const [addedToCart, setAddedToCart] = useState(false);
   const { products, getProductBySlug, loading } = useStore();
   const { addToCart } = useCart();
 
@@ -338,15 +338,15 @@ function ProductDetails() {
       {showFloatingProduct && (
         <div
           className="
-            fixed bottom-4 left-1/2 z-50
-            w-[95%] max-w-md
-            -translate-x-1/2
-            rounded-2xl
-            border border-[#eadfca]
-            bg-white p-3
-            shadow-[0_15px_45px_rgba(65,45,20,0.20)]
-            animate-[fadeIn_.3s]
-          "
+    fixed bottom-[55px] left-1/2 z-50
+    w-[95%] max-w-md
+    -translate-x-1/2
+    rounded-2xl
+    border border-[#eadfca]
+    bg-white p-3
+    shadow-[0_15px_45px_rgba(65,45,20,0.20)]
+    animate-[fadeIn_.3s]
+  "
         >
           <div className="flex items-center gap-3">
             <img
@@ -386,19 +386,43 @@ function ProductDetails() {
                   value: price,
                   currency: "SAR",
                 });
+
+                setAddedToCart(true);
+
+                setTimeout(() => {
+                  setAddedToCart(false);
+                }, 2000);
               }}
-              className="
-                rounded-xl
-                bg-[#b88a44]
-                px-4 py-2
-                font-bold text-white
-                transition-all duration-300
-                hover:bg-[#9d7337]
-                hover:shadow-lg
-                active:scale-95
-              "
+              className={`
+    min-w-[105px]
+    rounded-xl
+    px-4 py-2
+    font-bold text-white
+    transition-all duration-300
+    active:scale-95
+    ${
+      addedToCart
+        ? "bg-[#171717] shadow-lg"
+        : "bg-[#b08d57] hover:bg-[#9a7949] hover:shadow-lg"
+    }
+  `}
             >
-              أضف للسلة
+              <span
+                className={`inline-flex items-center justify-center gap-1.5 ${
+                  addedToCart ? "animate-[fadeIn_.2s]" : ""
+                }`}
+              >
+                {addedToCart ? (
+                  <>
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#b08d57] text-white">
+                      ✓
+                    </span>
+                    تمت الإضافة
+                  </>
+                ) : (
+                  "أضف للسلة"
+                )}
+              </span>
             </button>
           </div>
         </div>
