@@ -6,8 +6,18 @@ import { TIKTOK_PIXEL_ID } from "../../lib/tiktokPixel";
 function TikTokPixelTracker() {
   const location = useLocation();
 
-  // تحميل TikTok Pixel مرة واحدة
+  // =========================
+  // Initialize TikTok Pixel
+  // =========================
   useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (!TIKTOK_PIXEL_ID) {
+      console.warn("TikTok Pixel ID is not configured.");
+      return;
+    }
+
+    // إذا تم تحميل TikTok مسبقًا لا نعيد تحميله
     if (window.ttq) return;
 
     !(function (w, d, t) {
@@ -43,9 +53,11 @@ function TikTokPixelTracker() {
 
       ttq.instance = function (t) {
         const e = ttq._i[t] || [];
+
         for (let i = 0; i < ttq.methods.length; i++) {
           ttq.setAndDefer(e, ttq.methods[i]);
         }
+
         return e;
       };
 
@@ -63,24 +75,29 @@ function TikTokPixelTracker() {
         ttq._o[e] = n || {};
 
         const script = d.createElement("script");
+
         script.type = "text/javascript";
         script.async = true;
         script.src = r + "?sdkid=" + e + "&lib=" + t;
 
         const firstScript = d.getElementsByTagName("script")[0];
+
         firstScript.parentNode.insertBefore(script, firstScript);
       };
 
       ttq.load(TIKTOK_PIXEL_ID);
-      ttq.page();
     })(window, document, "ttq");
   }, []);
 
-  // تسجيل PageView عند كل انتقال بين صفحات React
+  // =========================
+  // PageView
+  // =========================
   useEffect(() => {
-    if (window.ttq) {
-      window.ttq.page();
-    }
+    if (typeof window === "undefined") return;
+
+    if (!window.ttq) return;
+
+    window.ttq.page();
   }, [location.pathname, location.search]);
 
   return null;
