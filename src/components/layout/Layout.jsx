@@ -6,11 +6,16 @@ import ScrollToTop from "../common/ScrollToTop";
 import ScrollToHash from "../common/ScrollToHash";
 import WhatsAppFloat from "../common/WhatsAppFloat";
 import MetaPixelTracker from "../common/MetaPixelTracker";
+import TikTokPixelTracker from "../common/TikTokPixelTracker";
 
 function Layout() {
   return (
     <>
+      {/* Meta Pixel */}
       <MetaPixelTracker />
+
+      {/* TikTok Pixel */}
+      <TikTokPixelTracker />
 
       <ScrollToTop />
       <ScrollToHash />

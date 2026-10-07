@@ -14,7 +14,7 @@ import {
 import { useCart } from "../../hooks/useCart";
 import { useWishlist } from "../../hooks/useWishlist";
 import { trackEvent } from "../../lib/metaPixel";
-
+import { trackTikTok } from "../../lib/tiktokPixel";
 function ProductActions({ product }) {
   const { addToCart } = useCart();
   const navigate = useNavigate();
@@ -40,11 +40,29 @@ function ProductActions({ product }) {
   };
 
   const trackAddToCart = () => {
+    const totalValue = price * quantity;
+
+    // Meta Pixel
     trackEvent("AddToCart", {
       content_name: product.name,
       content_ids: [product.id],
       content_type: "product",
-      value: price * quantity,
+      value: totalValue,
+      currency: "SAR",
+    });
+
+    // TikTok Pixel
+    trackTikTok("AddToCart", {
+      contents: [
+        {
+          content_id: product.id,
+          content_name: product.name,
+          quantity,
+          price,
+        },
+      ],
+      content_type: "product",
+      value: totalValue,
       currency: "SAR",
     });
   };

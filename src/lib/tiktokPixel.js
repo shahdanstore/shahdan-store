@@ -1,6 +1,6 @@
-export const trackTikTok = (event, data = {}) => {
-  if (typeof window === "undefined") return;
+export const TIKTOK_PIXEL_ID = import.meta.env.VITE_TIKTOK_PIXEL_ID || "";
 
+export const trackTikTok = (event, data = {}) => {
   if (!window.ttq) return;
 
   window.ttq.track(event, data);

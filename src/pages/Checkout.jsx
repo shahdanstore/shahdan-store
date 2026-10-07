@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import Select from "react-select";
@@ -94,18 +93,41 @@ function Checkout() {
   useEffect(() => {
     if (cartItems.length === 0 || orderCompleted) return;
 
+    const contentIds = cartItems.map((item) => item.id);
+
+    const numItems = cartItems.reduce(
+      (total, item) => total + Number(item.quantity || 0),
+      0,
+    );
+
+    const value = Number(finalTotal);
+
+    // =========================
+    // Meta Pixel
+    // =========================
     trackEvent("InitiateCheckout", {
-      content_ids: cartItems.map((item) => item.id),
+      content_ids: contentIds,
       content_type: "product",
-      num_items: cartItems.reduce(
-        (total, item) => total + Number(item.quantity || 0),
-        0,
-      ),
-      value: Number(finalTotal),
+      num_items: numItems,
+      value,
+      currency: "SAR",
+    });
+
+    // =========================
+    // TikTok Pixel
+    // =========================
+    trackTikTok("InitiateCheckout", {
+      contents: cartItems.map((item) => ({
+        content_id: item.id,
+        content_name: item.name,
+        quantity: Number(item.quantity || 0),
+        price: Number(item.price || 0),
+      })),
+      content_type: "product",
+      value,
       currency: "SAR",
     });
   }, [cartItems, finalTotal, orderCompleted]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -304,27 +326,19 @@ function Checkout() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <div className="mb-8 flex flex-wrap items-center gap-2 text-sm text-[#8a8175]">
-          <Link
-            to="/"
-            className="transition-colors hover:text-[#8a642f]"
-          >
+          <Link to="/" className="transition-colors hover:text-[#8a642f]">
             الرئيسية
           </Link>
 
           <ChevronLeft className="h-4 w-4 text-[#c7a15a]" />
 
-          <Link
-            to="/cart"
-            className="transition-colors hover:text-[#8a642f]"
-          >
+          <Link to="/cart" className="transition-colors hover:text-[#8a642f]">
             السلة
           </Link>
 
           <ChevronLeft className="h-4 w-4 text-[#c7a15a]" />
 
-          <span className="font-bold text-[#30291f]">
-            إتمام الطلب
-          </span>
+          <span className="font-bold text-[#30291f]">إتمام الطلب</span>
         </div>
 
         {/* Page title */}
@@ -364,9 +378,7 @@ function Checkout() {
                   </div>
 
                   <div>
-                    <h2 className="font-black text-[#30291f]">
-                      بيانات العميل
-                    </h2>
+                    <h2 className="font-black text-[#30291f]">بيانات العميل</h2>
 
                     <p className="mt-1 text-sm text-[#8a8175]">
                       أدخل بياناتك بشكل صحيح لاستلام الطلب
@@ -455,9 +467,8 @@ function Checkout() {
 
                     <Select
                       value={
-                        cities.find(
-                          (city) => city.value === customer.city,
-                        ) || null
+                        cities.find((city) => city.value === customer.city) ||
+                        null
                       }
                       onChange={handleCityChange}
                       options={cities}
@@ -482,9 +493,7 @@ function Checkout() {
                             : "none",
                           transition: "all 0.2s ease",
                           "&:hover": {
-                            borderColor: errors.city
-                              ? "#f87171"
-                              : "#b88a44",
+                            borderColor: errors.city ? "#f87171" : "#b88a44",
                           },
                         }),
 
@@ -512,8 +521,7 @@ function Checkout() {
                           borderRadius: "14px",
                           overflow: "hidden",
                           border: "1px solid #eadfca",
-                          boxShadow:
-                            "0 15px 35px rgba(92,67,35,0.12)",
+                          boxShadow: "0 15px 35px rgba(92,67,35,0.12)",
                         }),
 
                         option: (base, state) => ({
@@ -523,9 +531,7 @@ function Checkout() {
                             : state.isFocused
                               ? "#f8f3e8"
                               : "#ffffff",
-                          color: state.isSelected
-                            ? "#ffffff"
-                            : "#30291f",
+                          color: state.isSelected ? "#ffffff" : "#30291f",
                           cursor: "pointer",
                         }),
                       }}
@@ -607,9 +613,7 @@ function Checkout() {
                   </div>
 
                   <div>
-                    <h2 className="font-black text-[#30291f]">
-                      طريقة الدفع
-                    </h2>
+                    <h2 className="font-black text-[#30291f]">طريقة الدفع</h2>
 
                     <p className="mt-1 text-sm text-[#8a8175]">
                       اختر طريقة الدفع المناسبة لك
@@ -648,9 +652,7 @@ function Checkout() {
                   </div>
 
                   <div>
-                    <h2 className="font-black text-[#30291f]">
-                      ملخص الطلب
-                    </h2>
+                    <h2 className="font-black text-[#30291f]">ملخص الطلب</h2>
 
                     <p className="mt-1 text-xs text-[#8a8175]">
                       راجع تفاصيل طلبك قبل التأكيد
@@ -705,9 +707,7 @@ function Checkout() {
 
                 <div className="space-y-3 border-t border-[#eee5d5] pt-5 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-[#8a8175]">
-                      المجموع الفرعي
-                    </span>
+                    <span className="text-[#8a8175]">المجموع الفرعي</span>
 
                     <span className="font-bold text-[#30291f]">
                       {Number(cartTotal || 0).toFixed(2)} ر.س
@@ -718,9 +718,7 @@ function Checkout() {
                     <span className="text-[#8a8175]">الشحن</span>
 
                     {shippingCost === 0 ? (
-                      <span className="font-bold text-[#8a642f]">
-                        مجاني 🎉
-                      </span>
+                      <span className="font-bold text-[#8a642f]">مجاني 🎉</span>
                     ) : (
                       <span className="font-bold text-[#30291f]">
                         {Number(shippingCost).toFixed(2)} ر.س
@@ -765,9 +763,7 @@ function Checkout() {
                   {submitting ? (
                     <>
                       <Loader2 className="relative h-5 w-5 animate-spin" />
-                      <span className="relative">
-                        جارٍ تأكيد الطلب...
-                      </span>
+                      <span className="relative">جارٍ تأكيد الطلب...</span>
                     </>
                   ) : (
                     <>
@@ -816,4 +812,3 @@ function Checkout() {
 }
 
 export default Checkout;
-

@@ -380,8 +380,14 @@ function ProductDetails() {
                 });
 
                 trackTikTok("AddToCart", {
-                  content_id: product.id,
-                  content_name: product.name,
+                  contents: [
+                    {
+                      content_id: product.id,
+                      content_name: product.name,
+                      quantity: 1,
+                      price,
+                    },
+                  ],
                   content_type: "product",
                   value: price,
                   currency: "SAR",
