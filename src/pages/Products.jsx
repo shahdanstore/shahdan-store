@@ -18,16 +18,8 @@ import { useStore } from "../hooks/useStore";
 import { useCart } from "../hooks/useCart";
 import { useWishlist } from "../hooks/useWishlist";
 import PageSEO from "../components/common/PageSEO";
-import { useEffect } from "react";
-import { trackTikTok } from "../lib/tiktokPixel";
 
 export default function Products() {
-  useEffect(() => {
-    trackTikTok("ViewContent", {
-      content_type: "product_group",
-      content_name: "منتجات شهدان ستور",
-    });
-  }, []);
   const { products, categories } = useStore();
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();

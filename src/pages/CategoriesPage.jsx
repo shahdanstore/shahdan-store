@@ -1,14 +1,7 @@
 import Categories from "../components/common/Categories";
 import PageSEO from "../components/common/PageSEO";
-import { useEffect } from "react";
-import { trackTikTok } from "../lib/tiktokPixel";
+
 function CategoriesPage() {
-  useEffect(() => {
-    trackTikTok("ViewContent", {
-      content_type: "category",
-      content_name: "تصنيفات منتجات شهدان ستور",
-    });
-  }, []);
   return (
     <>
       <PageSEO

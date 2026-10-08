@@ -5,19 +5,11 @@ import FeaturedProducts from "../components/common/FeaturedProducts";
 import NewProducts from "../components/common/NewProducts";
 import Newsletter from "../components/common/Newsletter";
 import PageSEO from "../components/common/PageSEO";
-import { useEffect } from "react";
-import { trackTikTok } from "../lib/tiktokPixel";
+
 import { useSettings } from "../hooks/useSettings";
 
 export default function Home() {
   const { settings } = useSettings();
-
-  useEffect(() => {
-    trackTikTok("ViewContent", {
-      content_type: "homepage",
-      content_name: "الرئيسية - شهدان ستور",
-    });
-  }, []);
 
   return (
     <>
