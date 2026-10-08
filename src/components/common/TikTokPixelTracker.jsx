@@ -17,7 +17,6 @@ function TikTokPixelTracker() {
       return;
     }
 
-    // إذا تم تحميل TikTok مسبقًا لا نعيد تحميله
     if (window.ttq) return;
 
     !(function (w, d, t) {
@@ -97,7 +96,9 @@ function TikTokPixelTracker() {
 
     if (!window.ttq) return;
 
-    window.ttq.page();
+    window.ttq.ready(() => {
+      window.ttq.page();
+    });
   }, [location.pathname, location.search]);
 
   return null;
