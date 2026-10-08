@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import { TIKTOK_PIXEL_ID } from "../../lib/tiktokPixel";
 
 function TikTokPixelTracker() {
   const location = useLocation();
+  const isFirstPage = useRef(true);
 
   // =========================
   // Initialize TikTok Pixel
@@ -17,7 +18,10 @@ function TikTokPixelTracker() {
       return;
     }
 
-    if (window.ttq) return;
+    // إذا كان TikTok محملاً مسبقًا
+    if (window.ttq) {
+      return;
+    }
 
     !(function (w, d, t) {
       w.TiktokAnalyticsObject = t;
@@ -84,21 +88,27 @@ function TikTokPixelTracker() {
         firstScript.parentNode.insertBefore(script, firstScript);
       };
 
+      // تحميل Pixel
       ttq.load(TIKTOK_PIXEL_ID);
+
+      // PageView لأول زيارة
+      ttq.page();
     })(window, document, "ttq");
   }, []);
 
   // =========================
-  // PageView
+  // PageView عند التنقل داخل React
   // =========================
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (isFirstPage.current) {
+      isFirstPage.current = false;
+      return;
+    }
 
+    if (typeof window === "undefined") return;
     if (!window.ttq) return;
 
-    window.ttq.ready(() => {
-      window.ttq.page();
-    });
+    window.ttq.page();
   }, [location.pathname, location.search]);
 
   return null;
